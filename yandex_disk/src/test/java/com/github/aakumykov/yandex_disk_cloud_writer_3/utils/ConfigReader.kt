@@ -1,4 +1,4 @@
-package com.github.aakumykov.yandex_disk_cloud_writer_3
+package com.github.aakumykov.yandex_disk_cloud_writer_3.utils
 
 import java.io.File
 import java.util.Properties

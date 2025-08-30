@@ -1,4 +1,4 @@
-package com.github.aakumykov.yandex_disk_cloud_writer_3
+package com.github.aakumykov.cloud_writer_3
 
 import java.io.IOException
 import java.io.InputStream
