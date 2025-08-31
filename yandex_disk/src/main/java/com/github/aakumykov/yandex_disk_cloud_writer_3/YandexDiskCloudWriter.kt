@@ -155,9 +155,9 @@ class YandexDiskCloudWriter(
     }
 
 
-    override suspend fun fileExists(path: String, isRelative: Boolean): Boolean {
-        return if (isRelative) fileExistsAbsolute(virtualRootPlus(path))
-        else fileExistsAbsolute(path)
+    override suspend fun fileExists(path: String, isAbsolute: Boolean): Boolean {
+        return if (isAbsolute) fileExistsAbsolute(path)
+        else fileExistsAbsolute(virtualRootPlus(path))
     }
 
     private suspend fun fileExistsAbsolute(path: String): Boolean = suspendCancellableCoroutine { cc ->

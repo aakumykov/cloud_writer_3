@@ -41,6 +41,7 @@ interface CloudWriter {
      *
      * Служебный метод, для внутреннего использования другими методами.
      */
+    @Deprecated("Убрать из интерфейса")
     fun virtualRootPlus(vararg pathParts: String): String
 
 
@@ -48,7 +49,7 @@ interface CloudWriter {
      * Проверяет наличие файла/каталога.
      */
     @Throws(IOException::class, CloudWriterException::class)
-    suspend fun fileExists(path: String, isRelative: Boolean): Boolean
+    suspend fun fileExists(path: String, isAbsolute: Boolean): Boolean
 
 
     /**
