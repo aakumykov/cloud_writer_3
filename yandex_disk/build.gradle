@@ -5,7 +5,7 @@ plugins {
 
 android {
     namespace 'com.github.aakumykov.yandex_disk_cloud_writer_3'
-    compileSdk 35
+    compileSdk 36
 
     Properties properties = new Properties()
     properties.load(project.rootProject.file("local.properties").newDataInputStream())
