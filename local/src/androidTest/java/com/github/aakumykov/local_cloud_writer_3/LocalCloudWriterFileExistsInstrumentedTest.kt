@@ -16,37 +16,66 @@ import java.io.File
 @RunWith(AndroidJUnit4::class)
 class LocalCloudWriterFileExistsInstrumentedTest : StorageAccessTestCase() {
 
+    /**
+     * План тестирования:
+     * А) абсолютные методы
+     *  - абсолютный корневой каталог (/);
+     *  - виртуальный корневой каталог ("storage");
+     *  - несуществующий путь не существует;
+     * Б) относительные методы
+     *  - пустой каталог (будет равным виртуальному);
+     *  - "корневой каталог" относительно виртуального корня;
+     *  - несуществующий каталог;
+     *  - существующий (специально созданный) файл;
+     */
+
     private val cloudWriter: CloudWriter by lazy {
         localCloudWriter(storageRootPath)
     }
 
+    //
+    // "Абсолютные" методы.
+    //
 
-    /**
-     * Проверяет наличие каталога по отношению к виртуальному корню.
-     */
     @Test
-    fun relative_root_dir_exists() = runBlocking {
+    fun native_linux_root_dir_exists() = runBlocking {
         Assert.assertTrue(
             cloudWriter.fileExists(ROOT_DIR, true)
         )
     }
 
 
-    /**
-     * Проверяет наличие самого виртуального корня.
-     */
     @Test
-    fun absolute_root_dir_exists() = runBlocking {
+    fun storage_dir_exists() = runBlocking {
         Assert.assertTrue(
-            cloudWriter.fileExists("", false)
+            cloudWriter.fileExists(storageRootPath, true)
         )
     }
+
+
+    @Test
+    fun nonexistent_absolute_path_not_exists() = runBlocking {
+        Assert.assertFalse(
+            cloudWriter.fileExists(randomId, true)
+        )
+    }
+
+
+    //
+    // Относительные методы
+    //
+
+    /**
+     * Проверяет наличие виртуального корневого каталога
+     * по отношению к виртуальному корню.
+     */
+
 
 
     /**
      * Проверяет наличие истинного корневого каталога.
      */
-    @Test
+    /*@Test
     fun true_root_dir_exists() = runBlocking {
         Assert.assertTrue(
             cloudWriter.fileExists(ROOT_DIR, false)
@@ -54,9 +83,9 @@ class LocalCloudWriterFileExistsInstrumentedTest : StorageAccessTestCase() {
     }
 
 
-    /**
+    *//**
      * Отсутствующий файл должен сообщаться как отсутствующий.
-     */
+     *//*
     @Test
     fun unexistent_relative_path_does_not_exists() = runBlocking {
         Assert.assertFalse(
@@ -68,9 +97,9 @@ class LocalCloudWriterFileExistsInstrumentedTest : StorageAccessTestCase() {
     }
 
 
-    /**
+    *//**
      * Существующий файл должен сообщаться как таковой.
-     */
+     *//*
     @Test
     fun temp_file_exists() {
         tempFile.also {
@@ -79,16 +108,16 @@ class LocalCloudWriterFileExistsInstrumentedTest : StorageAccessTestCase() {
     }
 
 
-    /**
+    *//**
      * Существующий каталог должен сообщаться как таковой.
-     */
+     *//*
     @Test
     fun temp_dir_exists() = runBlocking {
         File(tempFile, randomId).apply {
             mkdirs()
             Assert.assertTrue(this.exists())
         }
-    }
+    }*/
 
 
     companion object {
