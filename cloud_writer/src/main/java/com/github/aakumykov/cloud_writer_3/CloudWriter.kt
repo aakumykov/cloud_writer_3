@@ -1,5 +1,6 @@
 package com.github.aakumykov.cloud_writer_3
 
+import com.github.aakumykov.cloud_writer_3.extensions.stripMultiSlashes
 import java.io.IOException
 import java.io.InputStream
 
@@ -41,7 +42,7 @@ interface CloudWriter {
      *
      * Служебный метод, для внутреннего использования другими методами.
      */
-    @Deprecated("Убрать из интерфейса")
+    @Deprecated("Убрать из интерфейса в абстрактный класс")
     fun virtualRootPlus(vararg pathParts: String): String
 
 
@@ -49,7 +50,11 @@ interface CloudWriter {
      * Проверяет наличие файла/каталога.
      */
     @Throws(IOException::class, CloudWriterException::class)
-    suspend fun fileExists(path: String, isAbsolute: Boolean): Boolean
+    suspend fun fileExists(path: String, isAbsolute: Boolean = false): Boolean
+
+
+    @Throws(IOException::class, CloudWriterException::class)
+    suspend fun fileExists(dirPath: String, fileName: String, isAbsolute: Boolean = false): Boolean
 
 
     /**
@@ -62,7 +67,7 @@ interface CloudWriter {
      * наличия каталога, используйте метод [createDirIfNotExist].
      */
     @Throws(IOException::class, CloudWriterException::class)
-    suspend fun createDir(dirPath: String, isRelative: Boolean): String
+    suspend fun createDir(dirPath: String, isAbsolute: Boolean = true): String
 
 
     @Throws(IOException::class, CloudWriterException::class)
@@ -131,5 +136,8 @@ interface CloudWriter {
          * Directory separator.
          */
         const val DS = "/"
+
+        fun mergeFilePaths(vararg paths: String): String
+            = paths.joinToString(DS).stripMultiSlashes()
     }
 }
