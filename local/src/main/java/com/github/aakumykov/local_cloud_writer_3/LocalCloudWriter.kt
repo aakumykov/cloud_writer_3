@@ -1,6 +1,7 @@
 package com.github.aakumykov.local_cloud_writer_3
 
 import com.github.aakumykov.cloud_writer_3.BasicCloudWriter
+import com.github.aakumykov.cloud_writer_3.CloudWriter
 import com.github.aakumykov.cloud_writer_3.CloudWriterException
 import com.github.aakumykov.copy_between_streams_with_counting.copyBetweenStreamsWithCounting
 import kotlinx.coroutines.suspendCancellableCoroutine
@@ -15,9 +16,9 @@ class LocalCloudWriter(
 )
     : BasicCloudWriter()
 {
-    override suspend fun createDir(dirPath: String, isRelative: Boolean): String {
-        return if (isRelative) createAbsoluteDir(virtualRootPlus(dirPath))
-        else createAbsoluteDir(dirPath)
+    override suspend fun createDir(dirPath: String, isAbsolute: Boolean): String {
+        return if (isAbsolute) createAbsoluteDir(dirPath)
+        else createAbsoluteDir(virtualRootPlus(dirPath))
     }
 
     override suspend fun createDirIfNotExist(dirPath: String, isRelative: Boolean): String {
@@ -87,6 +88,12 @@ class LocalCloudWriter(
         return if (isAbsolute) fileExistsAbsolute(path)
         else fileExistsAbsolute(virtualRootPlus(path))
     }
+
+
+    override suspend fun fileExists(dirPath: String, fileName: String, isAbsolute: Boolean): Boolean {
+        return fileExists(CloudWriter.mergeFilePaths(dirPath, fileName), isAbsolute)
+    }
+
 
     private fun fileExistsAbsolute(path: String): Boolean {
         return File(path).exists()
