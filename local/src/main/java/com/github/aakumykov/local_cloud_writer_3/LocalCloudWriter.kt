@@ -16,13 +16,13 @@ class LocalCloudWriter(
 )
     : BasicCloudWriter()
 {
-    override suspend fun createDir(dirPath: String, isAbsolute: Boolean): String {
+    override suspend fun createOneLevelDir(dirPath: String, isAbsolute: Boolean): String {
         return if (isAbsolute) createAbsoluteDir(dirPath)
         else createAbsoluteDir(virtualRootPlus(dirPath))
     }
 
-    override suspend fun createDir(parentPath: String, childName: String, isAbsolute: Boolean): String {
-        return createDir(CloudWriter.mergeFilePaths(parentPath, childName))
+    override suspend fun createOneLevelDir(parentPath: String, childName: String, isAbsolute: Boolean): String {
+        return createOneLevelDir(CloudWriter.mergeFilePaths(parentPath, childName))
     }
 
 

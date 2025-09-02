@@ -7,7 +7,6 @@ import com.github.aakumykov.local_cloud_writer_3.utils.downloadsDirPath
 import com.github.aakumykov.local_cloud_writer_3.utils.musicDirPath
 import com.github.aakumykov.local_cloud_writer_3.utils.randomId
 import com.github.aakumykov.local_cloud_writer_3.utils.storageRootPath
-import com.kaspersky.components.kautomator.common.Environment
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Test
@@ -40,7 +39,7 @@ class LocalCreateDir : LocalBase() {
     fun native_root_dir_throws_exception() {
         Assert.assertThrows(CloudWriterException::class.java) {
             runBlocking {
-                cloudWriter.createDir(ROOT_DIR, isAbsolute = true)
+                cloudWriter.createOneLevelDir(ROOT_DIR, isAbsolute = true)
             }
         }
     }
@@ -50,7 +49,7 @@ class LocalCreateDir : LocalBase() {
     fun virtual_root_dir_throws_exception() {
         Assert.assertThrows(CloudWriterException::class.java) {
             runBlocking {
-                cloudWriter.createDir(storageRootPath, isAbsolute = true)
+                cloudWriter.createOneLevelDir(storageRootPath, isAbsolute = true)
             }
         }
     }
@@ -61,7 +60,7 @@ class LocalCreateDir : LocalBase() {
         val dirPath = CloudWriter.mergeFilePaths(storageRootPath, randomId)
         Assert.assertEquals(
             dirPath,
-            cloudWriter.createDir(dirPath, isAbsolute = true)
+            cloudWriter.createOneLevelDir(dirPath, isAbsolute = true)
         )
     }
 
@@ -71,7 +70,7 @@ class LocalCreateDir : LocalBase() {
         val dirAbsolutePath = CloudWriter.mergeFilePaths(downloadsDirPath, randomId)
         Assert.assertEquals(
             dirAbsolutePath,
-            cloudWriter.createDir(dirAbsolutePath, isAbsolute = true)
+            cloudWriter.createOneLevelDir(dirAbsolutePath, isAbsolute = true)
         )
     }
 
@@ -81,7 +80,7 @@ class LocalCreateDir : LocalBase() {
         val dirAbsolutePath = CloudWriter.mergeFilePaths(musicDirPath, randomId)
         Assert.assertEquals(
             dirAbsolutePath,
-            cloudWriter.createDir(dirAbsolutePath, isAbsolute = true)
+            cloudWriter.createOneLevelDir(dirAbsolutePath, isAbsolute = true)
         )
     }
 
@@ -91,7 +90,7 @@ class LocalCreateDir : LocalBase() {
         Assert.assertThrows(CloudWriterException::class.java) {
             val dirName = CloudWriter.mergeFilePaths(randomId, randomId)
             runBlocking {
-                cloudWriter.createDir(
+                cloudWriter.createOneLevelDir(
                     dirPath = CloudWriter.mergeFilePaths(storageRootPath, dirName),
                     isAbsolute = true
                 )
@@ -108,7 +107,7 @@ class LocalCreateDir : LocalBase() {
     fun relative_root_dir_throws_exception() {
         Assert.assertThrows(CloudWriterException::class.java) {
             runBlocking {
-                cloudWriter.createDir(ROOT_DIR)
+                cloudWriter.createOneLevelDir(ROOT_DIR)
             }
         }
     }
@@ -118,7 +117,7 @@ class LocalCreateDir : LocalBase() {
     fun relative_empty_dir_throws_exception() {
         Assert.assertThrows(CloudWriterException::class.java) {
             runBlocking {
-                cloudWriter.createDir(EMPTY_DIR)
+                cloudWriter.createOneLevelDir(EMPTY_DIR)
             }
         }
     }
@@ -129,7 +128,7 @@ class LocalCreateDir : LocalBase() {
         val dirName = randomId
         Assert.assertEquals(
             CloudWriter.mergeFilePaths(storageRootPath, dirName),
-            cloudWriter.createDir(dirName)
+            cloudWriter.createOneLevelDir(dirName)
         )
     }
 
@@ -138,7 +137,7 @@ class LocalCreateDir : LocalBase() {
     fun relative_standard_dir_throws_exception() {
         Assert.assertThrows(CloudWriterException::class.java) {
             runBlocking {
-                cloudWriter.createDir(android.os.Environment.DIRECTORY_DOWNLOADS)
+                cloudWriter.createOneLevelDir(android.os.Environment.DIRECTORY_DOWNLOADS)
             }
         }
     }
@@ -148,7 +147,7 @@ class LocalCreateDir : LocalBase() {
     fun relative_illegal_name_dir_throws_exception() {
         Assert.assertThrows(CloudWriterException::class.java) {
             runBlocking {
-                cloudWriter.createDir(String(charArrayOf(Char(0))))
+                cloudWriter.createOneLevelDir(String(charArrayOf(Char(0))))
             }
         }
     }
@@ -158,7 +157,7 @@ class LocalCreateDir : LocalBase() {
     fun relative_multi_level_dir_throws_exception() {
         Assert.assertThrows(CloudWriterException::class.java) {
             runBlocking {
-                cloudWriter.createDir(CloudWriter.mergeFilePaths(randomId, randomId))
+                cloudWriter.createOneLevelDir(CloudWriter.mergeFilePaths(randomId, randomId))
             }
         }
     }

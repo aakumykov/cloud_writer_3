@@ -37,7 +37,7 @@ class YandexDiskCloudWriter(
         yandexDiskClientCreator.create(authToken)
     }
 
-    override suspend fun createDir(dirPath: String, isRelative: Boolean): String {
+    override suspend fun createOneLevelDir(dirPath: String, isRelative: Boolean): String {
         return if (isRelative) createAbsoluteDir(virtualRootPlus(dirPath))
         else createAbsoluteDir(dirPath)
     }

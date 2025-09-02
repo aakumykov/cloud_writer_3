@@ -9,7 +9,7 @@ import java.io.InputStream
  * 00) [проверять наличие каталогов] [fileExists]
  * 05) [проверять наличие файлов] [fileExists]
  * 10) создавать каталоги
- *  [createDir]
+ *  [createOneLevelDir]
  *  [createDirIfNotExist]
  *  [createDeepDir]
  *  [createDeepDirIfNotExists]
@@ -67,7 +67,7 @@ interface CloudWriter {
      * наличия каталога, используйте метод [createDirIfNotExist].
      */
     @Throws(IOException::class, CloudWriterException::class)
-    suspend fun createDir(dirPath: String, isAbsolute: Boolean = false): String
+    suspend fun createOneLevelDir(dirPath: String, isAbsolute: Boolean = false): String
 
 
     /**
@@ -76,7 +76,7 @@ interface CloudWriter {
      * @param childName Имя дочернего каталога в родительском.
      */
     @Throws(IOException::class, CloudWriterException::class)
-    suspend fun createDir(parentPath: String, childName: String, isAbsolute: Boolean): String
+    suspend fun createOneLevelDir(parentPath: String, childName: String, isAbsolute: Boolean): String
 
 
     @Throws(IOException::class, CloudWriterException::class)
