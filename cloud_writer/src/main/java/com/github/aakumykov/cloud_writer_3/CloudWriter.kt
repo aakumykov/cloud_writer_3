@@ -67,7 +67,16 @@ interface CloudWriter {
      * наличия каталога, используйте метод [createDirIfNotExist].
      */
     @Throws(IOException::class, CloudWriterException::class)
-    suspend fun createDir(dirPath: String, isAbsolute: Boolean = true): String
+    suspend fun createDir(dirPath: String, isAbsolute: Boolean = false): String
+
+
+    /**
+     * Аналогично методу [createDir](dirPath: String, isAbsolute: Boolean)
+     * @param parentPath Путь к родительскому каталогу.
+     * @param childName Имя дочернего каталога в родительском.
+     */
+    @Throws(IOException::class, CloudWriterException::class)
+    suspend fun createDir(parentPath: String, childName: String, isAbsolute: Boolean): String
 
 
     @Throws(IOException::class, CloudWriterException::class)

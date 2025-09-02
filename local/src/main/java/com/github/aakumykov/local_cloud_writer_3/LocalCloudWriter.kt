@@ -21,6 +21,11 @@ class LocalCloudWriter(
         else createAbsoluteDir(virtualRootPlus(dirPath))
     }
 
+    override suspend fun createDir(parentPath: String, childName: String, isAbsolute: Boolean): String {
+        return createDir(CloudWriter.mergeFilePaths(parentPath, childName))
+    }
+
+
     override suspend fun createDirIfNotExist(dirPath: String, isRelative: Boolean): String {
         return if (isRelative) createAbsoluteDirIfNotExists(virtualRootPlus(dirPath))
         else createAbsoluteDirIfNotExists(dirPath)

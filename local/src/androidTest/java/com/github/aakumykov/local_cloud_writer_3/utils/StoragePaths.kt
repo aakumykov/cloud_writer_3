@@ -7,9 +7,17 @@ val storageRootPath: String
         .getExternalStorageDirectory().absolutePath
 
 
-val downloadsPath: String
-    get() = Environment
-        .getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-        .absolutePath
+val downloadsDirPath: String
+    get() = standardDirAbsolutePath(Environment.DIRECTORY_DOWNLOADS)
 
+
+val musicDirPath: String
+    get() = standardDirAbsolutePath(Environment.DIRECTORY_MUSIC)
+
+
+fun standardDirAbsolutePath(dirPath: String): String {
+    return Environment
+        .getExternalStoragePublicDirectory(dirPath)
+        .absolutePath
+}
 
