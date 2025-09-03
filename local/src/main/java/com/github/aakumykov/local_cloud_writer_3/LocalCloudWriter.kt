@@ -3,6 +3,7 @@ package com.github.aakumykov.local_cloud_writer_3
 import com.github.aakumykov.cloud_writer_3.BasicCloudWriter
 import com.github.aakumykov.cloud_writer_3.CloudWriter
 import com.github.aakumykov.cloud_writer_3.CloudWriterException
+import com.github.aakumykov.cloud_writer_3.extensions.stripMultiSlashes
 import com.github.aakumykov.copy_between_streams_with_counting.copyBetweenStreamsWithCounting
 import kotlinx.coroutines.suspendCancellableCoroutine
 import java.io.File
@@ -47,19 +48,60 @@ class LocalCloudWriter(
     /**
      * @return Абсолютный путь к созданному каталогу.
      */
-    override suspend fun createDeepDir(dirPath: String, isRelative: Boolean): String {
+    @Deprecated("Переделать логику")
+    /*override suspend fun createDeepDir(dirPath: String, isAbsolute: Boolean): String {
 
-        val absolutePath = if (isRelative) virtualRootPlus(dirPath) else dirPath
+        fun splitPathToParts(path: String): List<String> = when {
+            (path == CloudWriter.EMPTY_STRING) -> emptyList()
+            (path == CloudWriter.DS) -> emptyList()
+            else -> path.stripMultiSlashes().split(CloudWriter.DS).filterNot { it.isEmpty() }
+        }
 
-        val relativePathToOperate = dirPath.replace(Regex("^${virtualRootPath}/+"),"")
+        val pathParts = splitPathToParts(dirPath)
 
-        return iterateOverDirsInPathFromRoot(relativePathToOperate) { partialPath ->
-            createOneLevelDirIfNotExists(partialPath, true)
-        }.let {
-            absolutePath
+        return if (pathParts.isNotEmpty()) {
+            splitPathToParts(dirPath)
+                .reduce { acc, s ->
+                    // TODO: использовать ClourWriter.mergePathParts() ?
+                    (acc + CloudWriter.DS + s).also { partialDeepPath ->
+                        createOneLevelDir(partialDeepPath, isAbsolute)
+                    }
+                }.also { fullDeepPath ->
+                    createOneLevelDir(fullDeepPath, isAbsolute)
+                }
+        } else {
+            (if (isAbsolute) dirPath
+            else virtualRootPath).let {
+                it
+            }
+        }
+    }*/
+
+
+    override suspend fun createDeepDir(parentPath: String, deepDirName: String): String {
+
+        fun splitPathToParts(path: String): List<String> = when {
+            (path == CloudWriter.EMPTY_STRING) -> emptyList()
+            (path == CloudWriter.DS) -> emptyList()
+            else -> path.stripMultiSlashes().split(CloudWriter.DS).filterNot { it.isEmpty() }
+        }
+
+        val dirParts = splitPathToParts(deepDirName)
+
+        return if (dirParts.isNotEmpty()) {
+            dirParts
+                .reduce { acc, s ->
+                    CloudWriter.mergeFilePaths(acc, s).also { dirName ->
+                        createOneLevelDir(dirName)
+                    }
+                }.also { fullDeepPath ->
+                    createOneLevelDir(fullDeepPath)
+                        .let { it }
+                }
+        } else {
+            parentPath
         }
     }
-
 
     override suspend fun createDeepDirIfNotExists(dirPath: String, isRelative: Boolean): String {
         return if (isRelative) createAbsoluteDeepDirIfNotExists(virtualRootPlus(dirPath))

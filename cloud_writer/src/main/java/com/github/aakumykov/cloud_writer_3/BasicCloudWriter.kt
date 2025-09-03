@@ -22,11 +22,13 @@ abstract class BasicCloudWriter : CloudWriter {
      */
     protected suspend fun iterateOverDirsInPathFromRoot(path: String, action: suspend (String) -> Unit): String {
         return path
-            .split(com.github.aakumykov.cloud_writer_3.CloudWriter.DS)
+            .split(CloudWriter.DS)
+            .let { it }
             .filterNot { "" == it }
+            .let { it }
             .reduce { acc, s ->
                 action(acc)
-                acc + com.github.aakumykov.cloud_writer_3.CloudWriter.DS + s
+                acc + CloudWriter.DS + s
             }.let { tailDir: String ->
                 action(tailDir)
                 path

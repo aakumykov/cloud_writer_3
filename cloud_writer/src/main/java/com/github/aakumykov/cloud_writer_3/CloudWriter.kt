@@ -62,17 +62,28 @@ interface CloudWriter {
     @Throws(IOException::class, CloudWriterException::class)
     suspend fun createOneLevelDirIfNotExists(dirPath: String, isAbsolute: Boolean = false): String
 
+
     @Throws(IOException::class, CloudWriterException::class)
     suspend fun createOneLevelDirIfNotExists(parentPath: String, childDirName: String, isAbsolute: Boolean = false): String
 
 
+    /**
+     * Создаёт многоуровневый каталог путём последовательного создания "вглубь".
+     * Существование этого метода обусловлено тем, что облачные API, по крайней мере,
+     * YandexDisk.REST_API, не позволяют создавать вложенные каталоги за один раз.
+     * Что-ж, из-за этого всем другим, даже методам работы с локальной файловой
+     * системой (?), придётся действовать так же.
+     *
+     * @return Абсолютный путь к созданному каталогу.
+     * @throws [IOException], [CloudWriterException]
+     */
+    @Throws(IOException::class, CloudWriterException::class)
+    suspend fun createDeepDir(parentPath: String, deepDirName: String): String
+
+
 
     @Throws(IOException::class, CloudWriterException::class)
-    suspend fun createDeepDir(dirPath: String, isRelative: Boolean): String
-
-
-    @Throws(IOException::class, CloudWriterException::class)
-    suspend fun createDeepDirIfNotExists(dirPath: String, isRelative: Boolean): String
+    suspend fun createDeepDirIfNotExists(dirPath: String, isAbsolute: Boolean): String
 
 
 
@@ -128,6 +139,7 @@ interface CloudWriter {
          * Directory separator.
          */
         const val DS = "/"
+        const val EMPTY_STRING = ""
 
         fun mergeFilePaths(vararg paths: String): String
             = paths.joinToString(DS).stripMultiSlashes()
