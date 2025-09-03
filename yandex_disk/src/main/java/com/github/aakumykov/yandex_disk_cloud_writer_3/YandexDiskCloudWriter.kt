@@ -2,6 +2,7 @@ package com.github.aakumykov.yandex_disk_cloud_writer_3
 
 import android.util.Log
 import com.github.aakumykov.cloud_writer_3.BasicCloudWriter
+import com.github.aakumykov.cloud_writer_3.CloudWriter
 import com.github.aakumykov.copy_between_streams_with_counting.copyBetweenStreamsWithCounting
 import com.github.aakumykov.yandex_disk_cloud_writer_3.ext.toCloudWriterException
 import com.google.gson.Gson
@@ -37,9 +38,17 @@ class YandexDiskCloudWriter(
         yandexDiskClientCreator.create(authToken)
     }
 
-    override suspend fun createOneLevelDir(dirPath: String, isRelative: Boolean): String {
-        return if (isRelative) createAbsoluteDir(virtualRootPlus(dirPath))
-        else createAbsoluteDir(dirPath)
+    override suspend fun createOneLevelDir(dirPath: String, isAbsolute: Boolean): String {
+        return if (isAbsolute) createAbsoluteDir(dirPath)
+        else createAbsoluteDir(virtualRootPlus(dirPath))
+    }
+
+    override suspend fun createOneLevelDir(
+        parentPath: String,
+        childName: String,
+        isAbsolute: Boolean
+    ): String {
+        return createOneLevelDir(CloudWriter.mergeFilePaths(parentPath, childName), isAbsolute)
     }
 
     private suspend fun createAbsoluteDir(path: String): String = suspendCancellableCoroutine { cc ->
@@ -63,9 +72,17 @@ class YandexDiskCloudWriter(
     }
 
 
-    override suspend fun createOneLevelDirIfNotExists(dirPath: String, isRelative: Boolean): String {
-        return if (isRelative) createDirIfNotExistAbsolute(virtualRootPlus(dirPath))
-        else createDirIfNotExistAbsolute(dirPath)
+    override suspend fun createOneLevelDirIfNotExists(dirPath: String, isAbsolute: Boolean): String {
+        return if (isAbsolute) createDirIfNotExistAbsolute(dirPath)
+        else createDirIfNotExistAbsolute(virtualRootPlus(dirPath))
+    }
+
+    override suspend fun createOneLevelDirIfNotExists(
+        parentPath: String,
+        childDirName: String,
+        isAbsolute: Boolean
+    ): String {
+        return createOneLevelDirIfNotExists(CloudWriter.mergeFilePaths(parentPath, childDirName), isAbsolute)
     }
 
     private suspend fun createDirIfNotExistAbsolute(path: String): String {
@@ -159,6 +176,15 @@ class YandexDiskCloudWriter(
         return if (isAbsolute) fileExistsAbsolute(path)
         else fileExistsAbsolute(virtualRootPlus(path))
     }
+
+    override suspend fun fileExists(
+        dirPath: String,
+        fileName: String,
+        isAbsolute: Boolean
+    ): Boolean {
+        return fileExists(CloudWriter.mergeFilePaths(dirPath, fileName), isAbsolute)
+    }
+
 
     private suspend fun fileExistsAbsolute(path: String): Boolean = suspendCancellableCoroutine { cc ->
 
