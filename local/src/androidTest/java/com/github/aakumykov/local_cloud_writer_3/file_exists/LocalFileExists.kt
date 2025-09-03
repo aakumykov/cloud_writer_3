@@ -239,6 +239,5 @@ class LocalFileExists : LocalBase() {
 
     companion object {
         private const val DIR_NAME = "some_dir"
-        private val ILLEGAL_DIR_NAME = String(charArrayOf(Char(0)))
     }
 }

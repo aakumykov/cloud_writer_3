@@ -11,7 +11,7 @@ import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Test
 
-class LocalCreateDir : LocalBase() {
+class LocalCreateOneLevelDir : LocalBase() {
 
 /**
  * План тестирования:
@@ -23,8 +23,10 @@ class LocalCreateDir : LocalBase() {
  *  - подкаталоги каталога "Загрузки" создаются [downloads_dir_subdir_created], [music_dir_subdir_created]
  *  - создание многоуровневого каталога вызывает исключение [multi_level_dir_throws_exception]
  *
- *  Метод-близнец с двумя аргументами можно не проверять, так как внутри он
+ *  Метод-обёртку с двумя аргументами можно не проверять, так как внутри он
  *  использует протестированный метод [CloudWriter.mergeFilePaths].
+ *  А вот и наоборот! Внутри обёртки я упустил передачу аргумента "isAbsolute",
+ *  и это осталось непротестированным :-(
  *
  * Б) относительный:
  *  - корневой (/) не создаётся, так как уже существует [relative_root_dir_throws_exception]
@@ -147,7 +149,7 @@ class LocalCreateDir : LocalBase() {
     fun relative_illegal_name_dir_throws_exception() {
         Assert.assertThrows(CloudWriterException::class.java) {
             runBlocking {
-                cloudWriter.createOneLevelDir(String(charArrayOf(Char(0))))
+                cloudWriter.createOneLevelDir(ILLEGAL_DIR_NAME)
             }
         }
     }

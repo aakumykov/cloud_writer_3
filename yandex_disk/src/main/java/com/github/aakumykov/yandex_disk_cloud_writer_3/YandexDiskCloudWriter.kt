@@ -63,7 +63,7 @@ class YandexDiskCloudWriter(
     }
 
 
-    override suspend fun createDirIfNotExist(dirPath: String, isRelative: Boolean): String {
+    override suspend fun createOneLevelDirIfNotExists(dirPath: String, isRelative: Boolean): String {
         return if (isRelative) createDirIfNotExistAbsolute(virtualRootPlus(dirPath))
         else createDirIfNotExistAbsolute(dirPath)
     }
@@ -91,7 +91,7 @@ class YandexDiskCloudWriter(
         val pathToOperate = path.replace(Regex("^${virtualRootPath}/+"),"")
 
         return iterateOverDirsInPathFromRoot(pathToOperate) { partialPath ->
-            createDirIfNotExist(partialPath, true)
+            createOneLevelDirIfNotExists(partialPath, true)
         }.let {
             path
         }

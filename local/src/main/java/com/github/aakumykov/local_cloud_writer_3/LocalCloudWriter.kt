@@ -22,13 +22,21 @@ class LocalCloudWriter(
     }
 
     override suspend fun createOneLevelDir(parentPath: String, childName: String, isAbsolute: Boolean): String {
-        return createOneLevelDir(CloudWriter.mergeFilePaths(parentPath, childName))
+        return createOneLevelDir(CloudWriter.mergeFilePaths(parentPath, childName), isAbsolute)
     }
 
 
-    override suspend fun createDirIfNotExist(dirPath: String, isRelative: Boolean): String {
-        return if (isRelative) createAbsoluteDirIfNotExists(virtualRootPlus(dirPath))
-        else createAbsoluteDirIfNotExists(dirPath)
+    override suspend fun createOneLevelDirIfNotExists(dirPath: String, isAbsolute: Boolean): String {
+        return if (isAbsolute) createAbsoluteDirIfNotExists(dirPath)
+        else createAbsoluteDirIfNotExists(virtualRootPlus(dirPath))
+    }
+
+    //
+    // Тестировать нужно именно этот метод-обёртку.
+    // Пусть он передаёт реальную работу другому методу, но вносит свою обёрточную специфику,
+    // и она также окажется автоматически проверенной.
+    override suspend fun createOneLevelDirIfNotExists(parentPath: String, childDirName: String, isAbsolute: Boolean): String {
+        return createOneLevelDirIfNotExists(CloudWriter.mergeFilePaths(parentPath,childDirName), isAbsolute)
     }
 
     private fun createAbsoluteDirIfNotExists(path: String): String {
@@ -46,7 +54,7 @@ class LocalCloudWriter(
         val relativePathToOperate = dirPath.replace(Regex("^${virtualRootPath}/+"),"")
 
         return iterateOverDirsInPathFromRoot(relativePathToOperate) { partialPath ->
-            createDirIfNotExist(partialPath, true)
+            createOneLevelDirIfNotExists(partialPath, true)
         }.let {
             absolutePath
         }
@@ -75,7 +83,7 @@ class LocalCloudWriter(
     private suspend fun createAbsoluteDeepDirIfNotExists(path: String): String {
         return if (fileExistsAbsolute(path)) path
         else iterateOverDirsInPathFromRoot(path) { partialDeepPath ->
-            createDirIfNotExist(partialDeepPath, true)
+            createOneLevelDirIfNotExists(partialDeepPath, true)
         }
     }
 
