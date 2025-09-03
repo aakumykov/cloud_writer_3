@@ -1,19 +1,11 @@
 package com.github.aakumykov.cloud_writer_3
 
-import com.github.aakumykov.cloud_writer_3.extensions.stripMultiSlashes
-
-abstract class BasicCloudWriter : com.github.aakumykov.cloud_writer_3.CloudWriter {
+abstract class BasicCloudWriter : CloudWriter {
 
     abstract override val virtualRootPath: String
 
-    override fun virtualRootPlus(vararg pathParts: String): String {
-        return mutableListOf(virtualRootPath)
-            .apply {
-                if (!addAll(pathParts.toList()))
-                    throw RuntimeException("Cannot add path parts to virtual root path.")
-            }
-            .joinToString(com.github.aakumykov.cloud_writer_3.CloudWriter.DS)
-            .stripMultiSlashes()
+    protected fun virtualRootPlus(vararg pathParts: String): String {
+        return CloudWriter.mergeFilePaths(virtualRootPath, *pathParts)
     }
 
     /**

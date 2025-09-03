@@ -10,7 +10,7 @@ import java.io.InputStream
  * 05) [проверять наличие файлов] [fileExists]
  * 10) создавать каталоги
  *  [createOneLevelDir]
- *  [createDirIfNotExist]
+ *  [createOneLevelDirIfNotExists]
  *  [createDeepDir]
  *  [createDeepDirIfNotExists]
  * 15) загружать файлы (потоки?) [putStream]
@@ -25,26 +25,6 @@ import java.io.InputStream
 interface CloudWriter {
 
     val virtualRootPath: String
-
-    /**
-     * Соединяет виртауальный корень с произвольным количеством
-     * дополнительных путей, в результате чего получается путь к более глубокому каталогу.
-     *
-     * Не добавляет к результату конечный слеш, так что, если:
-     * - свойство [virtualRootPath] = "/root/path";
-     * - аргументом - пустая строка (""),
-     * результатом будет "/root/path", а не "/root/path/".
-     *
-     * Удаляет двойные и множественные слеши.
-     *
-     * FIXME: что делать с элементами ".."?
-     *  Это угроза безопасности!
-     *
-     * Служебный метод, для внутреннего использования другими методами.
-     */
-    @Deprecated("Убрать из интерфейса в абстрактный класс")
-    fun virtualRootPlus(vararg pathParts: String): String
-
 
     /**
      * Проверяет наличие файла/каталога.
@@ -64,11 +44,10 @@ interface CloudWriter {
      * @return абсолютный путь к созданному каталогу.
      * @throws CloudWriterException если каталог не создан, в том числе по
      * причине того, что он уже существует. Для работы без ошибки в случае
-     * наличия каталога, используйте метод [createDirIfNotExist].
+     * наличия каталога, используйте метод [createOneLevelDirIfNotExists].
      */
     @Throws(IOException::class, CloudWriterException::class)
     suspend fun createOneLevelDir(dirPath: String, isAbsolute: Boolean = false): String
-
 
     /**
      * Аналогично методу [createDir](dirPath: String, isAbsolute: Boolean)
@@ -79,8 +58,12 @@ interface CloudWriter {
     suspend fun createOneLevelDir(parentPath: String, childName: String, isAbsolute: Boolean): String
 
 
+
     @Throws(IOException::class, CloudWriterException::class)
-    suspend fun createDirIfNotExist(dirPath: String, isRelative: Boolean): String
+    suspend fun createOneLevelDirIfNotExists(dirPath: String, isAbsolute: Boolean = false): String
+
+    @Throws(IOException::class, CloudWriterException::class)
+    suspend fun createOneLevelDirIfNotExists(parentPath: String, childDirName: String, isAbsolute: Boolean = false): String
 
 
 
