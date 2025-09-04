@@ -17,10 +17,6 @@ class LocalCloudWriter(
 )
     : BasicCloudWriter()
 {
-    override fun absolutePathFor(dirName: String): String {
-        return CloudWriter.mergeFilePaths(virtualRootPath, dirName)
-    }
-
     override suspend fun createOneLevelDir(dirName: String): String {
         return with(File(virtualRootPlus(dirName))) {
             val dirAbsolutePath = this.absolutePath
@@ -40,13 +36,10 @@ class LocalCloudWriter(
         else createOneLevelDir(dirPath)
     }
 
-    //
-    // Тестировать нужно именно этот метод-обёртку.
-    // Пусть он передаёт реальную работу другому методу, но вносит свою обёрточную специфику,
-    // и она также окажется автоматически проверенной.
     override suspend fun createOneLevelDirIfNotExists(parentPath: String, childDirName: String): String {
         return createOneLevelDirIfNotExists(CloudWriter.mergeFilePaths(parentPath,childDirName))
     }
+
 
     /*private fun createAbsoluteDirIfNotExists(path: String): String {
         return if (fileExistsAbsolute(path)) path

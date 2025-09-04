@@ -26,7 +26,9 @@ interface CloudWriter {
 
     val virtualRootPath: String
 
-    fun absolutePathFor(dirName: String): String
+    fun absolutePathFor(dirName: String): String {
+        return mergeFilePaths(virtualRootPath, dirName)
+    }
 
     /**
      * Проверяет наличие файла/каталога.
