@@ -4,8 +4,8 @@ abstract class BasicCloudWriter : CloudWriter {
 
     abstract override val virtualRootPath: String
 
-    protected fun virtualRootPlus(vararg pathParts: String): String {
-        return CloudWriter.mergeFilePaths(virtualRootPath, *pathParts)
+    protected fun virtualRootPlus(dirName: String): String {
+        return CloudWriter.mergeFilePaths(virtualRootPath, dirName)
     }
 
     /**

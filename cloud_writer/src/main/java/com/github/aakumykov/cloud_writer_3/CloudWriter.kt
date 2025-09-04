@@ -60,7 +60,7 @@ interface CloudWriter {
 
 
     /**
-     * Аналогично методу [createDir](dirPath: String, isAbsolute: Boolean)
+     * Аналогичен методу [createOneLevelDir]
      * @param parentPath Путь к родительскому каталогу.
      * @param childName Имя дочернего каталога в родительском.
      */

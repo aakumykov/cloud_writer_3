@@ -95,8 +95,8 @@ class LocalCreateOneLevelDirIfNotExists : LocalBase() {
     @Test
     fun relative_create_empty_dir() = runBlocking {
         Assert.assertEquals(
-            CloudWriter.mergeFilePaths(storageRootPath, EMPTY_DIR),
-            cloudWriter.createOneLevelDirIfNotExists(EMPTY_DIR)
+            CloudWriter.mergeFilePaths(storageRootPath, EMPTY_DIR_NAME),
+            cloudWriter.createOneLevelDirIfNotExists(EMPTY_DIR_NAME)
         )
     }
     

@@ -12,7 +12,7 @@ abstract class LocalBase : StorageAccessTestCase() {
 
     companion object {
         const val ROOT_DIR = "/"
-        const val EMPTY_DIR = ""
+        const val EMPTY_DIR_NAME = ""
         val ILLEGAL_DIR_NAME = String(charArrayOf(Char(0)))
     }
 }

@@ -69,7 +69,7 @@ class LocalFileExists : LocalBase() {
     @Test
     fun empty_dir_exists_as_it_equals_virtual_root() = runBlocking {
         Assert.assertTrue(
-            cloudWriter.fileExists(EMPTY_DIR, false)
+            cloudWriter.fileExists(EMPTY_DIR_NAME, false)
         )
     }
 
@@ -109,7 +109,7 @@ class LocalFileExists : LocalBase() {
     //
     @Test
     fun two_empty_args_equals_virtual_root_that_exists() = runBlocking {
-        Assert.assertTrue(cloudWriter.fileExists(EMPTY_DIR, EMPTY_DIR))
+        Assert.assertTrue(cloudWriter.fileExists(EMPTY_DIR_NAME, EMPTY_DIR_NAME))
     }
 
 
@@ -117,7 +117,7 @@ class LocalFileExists : LocalBase() {
     fun not_empty_and_empty() = runBlocking {
         val parentDirName = createDirInStorage(DIR_NAME).name
         Assert.assertTrue(
-            cloudWriter.fileExists(parentDirName, EMPTY_DIR)
+            cloudWriter.fileExists(parentDirName, EMPTY_DIR_NAME)
         )
     }
 
@@ -126,7 +126,7 @@ class LocalFileExists : LocalBase() {
     fun empty_and_not_empty() = runBlocking {
         val childDirName = createDirInStorage(DIR_NAME).name
         Assert.assertTrue(
-            cloudWriter.fileExists(EMPTY_DIR, childDirName)
+            cloudWriter.fileExists(EMPTY_DIR_NAME, childDirName)
         )
     }
 
@@ -147,7 +147,7 @@ class LocalFileExists : LocalBase() {
         val parentDirsRelativePath = CloudWriter.mergeFilePaths(DIR_NAME, DIR_NAME)
         createDirInStorage(parentDirsRelativePath)
         Assert.assertTrue(
-            cloudWriter.fileExists(parentDirsRelativePath, EMPTY_DIR)
+            cloudWriter.fileExists(parentDirsRelativePath, EMPTY_DIR_NAME)
         )
     }
 
@@ -157,7 +157,7 @@ class LocalFileExists : LocalBase() {
         val childDirsRelativePath = CloudWriter.mergeFilePaths(DIR_NAME, DIR_NAME)
         createDirInStorage(childDirsRelativePath)
         Assert.assertTrue(
-            cloudWriter.fileExists(EMPTY_DIR, childDirsRelativePath)
+            cloudWriter.fileExists(EMPTY_DIR_NAME, childDirsRelativePath)
         )
     }
 
