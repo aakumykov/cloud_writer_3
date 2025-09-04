@@ -17,33 +17,41 @@ class LocalCloudWriter(
 )
     : BasicCloudWriter()
 {
-    override suspend fun createOneLevelDir(dirPath: String, isAbsolute: Boolean): String {
-        return if (isAbsolute) createAbsoluteDir(dirPath)
-        else createAbsoluteDir(virtualRootPlus(dirPath))
+    override fun absolutePathFor(dirName: String): String {
+        return CloudWriter.mergeFilePaths(virtualRootPath, dirName)
     }
 
-    override suspend fun createOneLevelDir(parentPath: String, childName: String, isAbsolute: Boolean): String {
-        return createOneLevelDir(CloudWriter.mergeFilePaths(parentPath, childName), isAbsolute)
+    override suspend fun createOneLevelDir(dirName: String): String {
+        return with(File(virtualRootPlus(dirName))) {
+            val dirAbsolutePath = this.absolutePath
+            if (!mkdir())
+                throw CloudWriterException("Dir '$dirAbsolutePath' was not created")
+            dirAbsolutePath
+        }
+    }
+
+    override suspend fun createOneLevelDir(parentPath: String, childName: String): String {
+        return createOneLevelDir(CloudWriter.mergeFilePaths(parentPath, childName))
     }
 
 
-    override suspend fun createOneLevelDirIfNotExists(dirPath: String, isAbsolute: Boolean): String {
-        return if (isAbsolute) createAbsoluteDirIfNotExists(dirPath)
-        else createAbsoluteDirIfNotExists(virtualRootPlus(dirPath))
+    override suspend fun createOneLevelDirIfNotExists(dirPath: String): String {
+        return if (fileExists(dirPath)) virtualRootPlus(dirPath)
+        else createOneLevelDir(dirPath)
     }
 
     //
     // Тестировать нужно именно этот метод-обёртку.
     // Пусть он передаёт реальную работу другому методу, но вносит свою обёрточную специфику,
     // и она также окажется автоматически проверенной.
-    override suspend fun createOneLevelDirIfNotExists(parentPath: String, childDirName: String, isAbsolute: Boolean): String {
-        return createOneLevelDirIfNotExists(CloudWriter.mergeFilePaths(parentPath,childDirName), isAbsolute)
+    override suspend fun createOneLevelDirIfNotExists(parentPath: String, childDirName: String): String {
+        return createOneLevelDirIfNotExists(CloudWriter.mergeFilePaths(parentPath,childDirName))
     }
 
-    private fun createAbsoluteDirIfNotExists(path: String): String {
+    /*private fun createAbsoluteDirIfNotExists(path: String): String {
         return if (fileExistsAbsolute(path)) path
         else createAbsoluteDir(path)
-    }
+    }*/
 
     /**
      * @return Абсолютный путь к созданному каталогу.
@@ -123,25 +131,16 @@ class LocalCloudWriter(
 
 
     private suspend fun createAbsoluteDeepDirIfNotExists(path: String): String {
-        return if (fileExistsAbsolute(path)) path
+        return if (fileExists(path)) path
         else iterateOverDirsInPathFromRoot(path) { partialDeepPath ->
-            createOneLevelDirIfNotExists(partialDeepPath, true)
+            createOneLevelDirIfNotExists(partialDeepPath)
         }
     }
 
-
-
-    private fun createAbsoluteDir(path: String): String {
-        return with(File(path)) {
-            if (!mkdir())
-                throw CloudWriterException("Dir '$path' was not created")
-            path
-        }
-    }
 
     override suspend fun fileExists(path: String, isAbsolute: Boolean): Boolean {
-        return if (isAbsolute) fileExistsAbsolute(path)
-        else fileExistsAbsolute(virtualRootPlus(path))
+        return if (isAbsolute) fileExists(path)
+        else fileExists(virtualRootPlus(path))
     }
 
 
@@ -150,7 +149,7 @@ class LocalCloudWriter(
     }
 
 
-    private fun fileExistsAbsolute(path: String): Boolean {
+    private fun fileExists(path: String): Boolean {
         return File(path).exists()
     }
 

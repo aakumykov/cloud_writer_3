@@ -38,17 +38,16 @@ class YandexDiskCloudWriter(
         yandexDiskClientCreator.create(authToken)
     }
 
-    override suspend fun createOneLevelDir(dirPath: String, isAbsolute: Boolean): String {
-        return if (isAbsolute) createAbsoluteDir(dirPath)
-        else createAbsoluteDir(virtualRootPlus(dirPath))
+    override suspend fun createOneLevelDir(dirName: String): String {
+        return if (isAbsolute) createAbsoluteDir(dirName)
+        else createAbsoluteDir(virtualRootPlus(dirName))
     }
 
     override suspend fun createOneLevelDir(
         parentPath: String,
-        childName: String,
-        isAbsolute: Boolean
+        childName: String
     ): String {
-        return createOneLevelDir(CloudWriter.mergeFilePaths(parentPath, childName), isAbsolute)
+        return createOneLevelDir(CloudWriter.mergeFilePaths(parentPath, childName))
     }
 
     private suspend fun createAbsoluteDir(path: String): String = suspendCancellableCoroutine { cc ->
@@ -72,17 +71,16 @@ class YandexDiskCloudWriter(
     }
 
 
-    override suspend fun createOneLevelDirIfNotExists(dirPath: String, isAbsolute: Boolean): String {
+    override suspend fun createOneLevelDirIfNotExists(dirPath: String): String {
         return if (isAbsolute) createDirIfNotExistAbsolute(dirPath)
         else createDirIfNotExistAbsolute(virtualRootPlus(dirPath))
     }
 
     override suspend fun createOneLevelDirIfNotExists(
         parentPath: String,
-        childDirName: String,
-        isAbsolute: Boolean
+        childDirName: String
     ): String {
-        return createOneLevelDirIfNotExists(CloudWriter.mergeFilePaths(parentPath, childDirName), isAbsolute)
+        return createOneLevelDirIfNotExists(CloudWriter.mergeFilePaths(parentPath, childDirName))
     }
 
     private suspend fun createDirIfNotExistAbsolute(path: String): String {
@@ -108,7 +106,7 @@ class YandexDiskCloudWriter(
         val pathToOperate = path.replace(Regex("^${virtualRootPath}/+"),"")
 
         return iterateOverDirsInPathFromRoot(pathToOperate) { partialPath ->
-            createOneLevelDirIfNotExists(partialPath, true)
+            createOneLevelDirIfNotExists(partialPath)
         }.let {
             path
         }

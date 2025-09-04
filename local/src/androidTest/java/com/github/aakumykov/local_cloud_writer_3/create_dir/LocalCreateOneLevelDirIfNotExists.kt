@@ -33,7 +33,7 @@ class LocalCreateOneLevelDirIfNotExists : LocalBase() {
     fun create_native_root_dir() = runBlocking {
         Assert.assertEquals(
             ROOT_DIR,
-            cloudWriter.createOneLevelDirIfNotExists(ROOT_DIR, isAbsolute = true)
+            cloudWriter.createOneLevelDirIfNotExists(ROOT_DIR)
         )
     }
 
@@ -41,7 +41,7 @@ class LocalCreateOneLevelDirIfNotExists : LocalBase() {
     fun create_virtual_root_dir() = runBlocking {
         Assert.assertEquals(
             storageRootPath,
-            cloudWriter.createOneLevelDirIfNotExists(storageRootPath, isAbsolute = true)
+            cloudWriter.createOneLevelDirIfNotExists(storageRootPath)
         )
     }
 
@@ -50,7 +50,7 @@ class LocalCreateOneLevelDirIfNotExists : LocalBase() {
         val dirPath = CloudWriter.mergeFilePaths(storageRootPath, randomId)
         Assert.assertEquals(
             dirPath,
-            cloudWriter.createOneLevelDirIfNotExists(dirPath, isAbsolute = true)
+            cloudWriter.createOneLevelDirIfNotExists(dirPath)
         )
     }
 
@@ -63,7 +63,7 @@ class LocalCreateOneLevelDirIfNotExists : LocalBase() {
             val dirPath = CloudWriter.mergeFilePaths(storageRootPath, subdirRelativePath)
             Assert.assertEquals(
                 dirPath,
-                cloudWriter.createOneLevelDirIfNotExists(dirPath, isAbsolute = true)
+                cloudWriter.createOneLevelDirIfNotExists(dirPath)
             )
         }
     }
@@ -74,8 +74,7 @@ class LocalCreateOneLevelDirIfNotExists : LocalBase() {
         Assert.assertThrows(CloudWriterException::class.java) {
             runBlocking {
                 cloudWriter.createOneLevelDirIfNotExists(
-                    ILLEGAL_DIR_NAME,
-                    isAbsolute = true
+                    ILLEGAL_DIR_NAME
                 )
             }
         }
