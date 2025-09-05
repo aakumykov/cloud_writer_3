@@ -48,18 +48,12 @@ class LocalCloudWriter(
     /**
      * @return Абсолютный путь к созданному каталогу.
      */
-    override suspend fun createDeepDir(deepDirName: String): String {
+    override suspend fun createDeepDir(names: Iterable<String>): String {
 
-        fun splitPathToParts(path: String): List<String> = when {
-            (path == CloudWriter.EMPTY_STRING) -> emptyList()
-            (path == CloudWriter.DS) -> emptyList()
-            else -> path.stripMultiSlashes().split(CloudWriter.DS).filterNot { it.isEmpty() }
-        }
 
-        val pathParts = splitPathToParts(deepDirName)
 
         return if (pathParts.isNotEmpty()) {
-            splitPathToParts(deepDirName)
+            splitPathToParts(names)
                 .reduce { currentPathIntoDeep, nextDirIntoDeep ->
                     createOneLevelDir(currentPathIntoDeep)
                     CloudWriter.mergeFilePaths(currentPathIntoDeep, nextDirIntoDeep)
@@ -71,32 +65,6 @@ class LocalCloudWriter(
         }
     }
 
-
-
-    override suspend fun createDeepDir(parentPath: String, deepDirName: String): String {
-
-        fun splitPathToParts(path: String): List<String> = when {
-            (path == CloudWriter.EMPTY_STRING) -> emptyList()
-            (path == CloudWriter.DS) -> emptyList()
-            else -> path.stripMultiSlashes().split(CloudWriter.DS).filterNot { it.isEmpty() }
-        }
-
-        val dirParts = splitPathToParts(deepDirName)
-
-        return if (dirParts.isNotEmpty()) {
-            dirParts
-                .reduce { acc, s ->
-                    CloudWriter.mergeFilePaths(acc, s).also { dirName ->
-                        createOneLevelDir(dirName)
-                    }
-                }.also { fullDeepPath ->
-                    createOneLevelDir(fullDeepPath)
-                        .let { it }
-                }
-        } else {
-            parentPath
-        }
-    }
 
     override suspend fun createDeepDirIfNotExists(dirPath: String, isRelative: Boolean): String {
         return if (isRelative) createAbsoluteDeepDirIfNotExists(virtualRootPlus(dirPath))

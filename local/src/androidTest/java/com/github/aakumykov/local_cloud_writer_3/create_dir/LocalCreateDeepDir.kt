@@ -1,9 +1,9 @@
 package com.github.aakumykov.local_cloud_writer_3.create_dir
 
 import com.github.aakumykov.cloud_writer_3.CloudWriter
+import com.github.aakumykov.cloud_writer_3.CloudWriterException
 import com.github.aakumykov.local_cloud_writer_3.base.LocalBase
 import com.github.aakumykov.local_cloud_writer_3.utils.randomId
-import com.github.aakumykov.local_cloud_writer_3.utils.storageRootPath
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Test
@@ -11,51 +11,57 @@ import org.junit.Test
 class LocalCreateDeepDir : LocalBase() {
 
     private val deepDirMaxDepth = 10
+    private val illegalNameCheckingIterations = deepDirMaxDepth
 
-    /**
+/**
  * План тестирования:
- * А) "Абсолютное"
- *  - вырожденные случаи:
- *      FIXME: кривая логика то ли метода, то ли принципа тестирования
- *      а) создание вложенных каталогов из "корневых путей" выбрасывает ошибку,
- *         так как будет попытка создать корневой каталог []
- *      б) создание вложенных каталогов из пустых путей
- *      в) смешанный случай.
- *      TODO: нужно ли это вообще тестировать? Ведь это граничные варианты, не
- *      проще ли их фильтровать?
+ * - создание "глубоких" каталогов разного уровня [create_deep_dirs_with_different_levels]
  *
- *  - обычные каталоги:
- *      1) глубокий каталог разной степени глубины [create_deep_dirs_with_different_levels]
- *      2) глубокий каталог где встречаются двойные слеши... (?)
- *      3) глубокий, в котором встречаются запрещённые символы
+ * - создание таких каталогов с недопустимым именем на одном из уровней [create_deep_dir_with_some_illegal_name_throws_exception]
+ * - создание с промежуточными пустыми именами [create_deep_dir_with_some_empty_names_]
+ * - создание с промежуточными "корневыми" именами []
  *
- *      FIXME: все аргументы-пути
+ * - создание с пустыми именами []
+ * - создание с "корневыми" именами []
+ * - сочетание пустых и "корневых" имён []
  */
 
-    /*@Test
-    fun create_deep_roots_dir() = runBlocking {
-        val deepDirPath = CloudWriter.mergeFilePaths(ROOT_DIR, ROOT_DIR)
-        val createdDirExpectedPath = CloudWriter.mergeFilePaths(ROOT_DIR, deepDirPath)
-        Assert.assertEquals(
-            createdDirExpectedPath,
-            cloudWriter.createDeepDir(deepDirPath, isAbsolute = true)
-        )
-    }*/
 
     @Test
     fun create_deep_dirs_with_different_levels() = runBlocking {
         repeat(deepDirMaxDepth) { i ->
-            val p = Array(i+1) { randomId }
-            val deepDirPath = CloudWriter.mergeFilePaths(*p)
+            val names = Array(i+1) { randomId }
+            val deepDirPath = CloudWriter.mergeFilePaths(*names)
 
-            // FIXME: нужен какой-то единый метод соединения путей
-            val expectedDirPath = CloudWriter.mergeFilePaths(storageRootPath, deepDirPath)
-            val createdPath = cloudWriter.createDeepDir(storageRootPath, deepDirPath)
+            val expectedDirPath = cloudWriter.absolutePathFor(deepDirPath)
+            val createdPath = cloudWriter.createDeepDir(deepDirPath)
 
             Assert.assertEquals(
                 expectedDirPath,
                 createdPath
             )
+        }
+    }
+
+
+    @Test
+    fun create_deep_dir_with_some_illegal_name_throws_exception() {
+        repeat(illegalNameCheckingIterations) {
+
+            val names: List<String> = List(deepDirMaxDepth) { i -> "d$i" }
+                .toMutableList()
+                .apply {
+                    add(ILLEGAL_DIR_NAME)
+                    shuffle()
+                }
+
+            Assert.assertThrows(CloudWriterException::class.java) {
+                runBlocking {
+                    cloudWriter.createDeepDir(
+                        CloudWriter.mergeFilePaths(* names.toTypedArray())
+                    )
+                }
+            }
         }
     }
 }

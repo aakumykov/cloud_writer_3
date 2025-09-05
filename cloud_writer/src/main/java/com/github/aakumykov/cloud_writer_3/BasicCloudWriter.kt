@@ -2,7 +2,13 @@ package com.github.aakumykov.cloud_writer_3
 
 abstract class BasicCloudWriter : CloudWriter {
 
+    companion object {
+        private val ZERO_CHAR_STRING = String(charArrayOf(Char(0)))
+    }
+
     abstract override val virtualRootPath: String
+
+    override val validFileNameRegex: Regex = Regex("^[^$ZERO_CHAR_STRING]$")
 
     protected fun virtualRootPlus(dirName: String): String {
         return CloudWriter.mergeFilePaths(virtualRootPath, dirName)

@@ -26,6 +26,7 @@ interface CloudWriter {
 
     val virtualRootPath: String
 
+    val validFileNameRegex: Regex
 
     fun absolutePathFor(dirName: String): String {
         return mergeFilePaths(virtualRootPath, dirName)
@@ -92,7 +93,7 @@ interface CloudWriter {
      * @throws [IOException], [CloudWriterException]
      */
     @Throws(IOException::class, CloudWriterException::class)
-    suspend fun createDeepDir(parentPath: String, deepDirName: String): String
+    suspend fun createDeepDir(names: Iterable<String>): String
 
 
 
