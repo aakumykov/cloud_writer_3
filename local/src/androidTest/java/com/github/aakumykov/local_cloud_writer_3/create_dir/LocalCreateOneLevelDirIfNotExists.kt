@@ -46,14 +46,17 @@ class LocalCreateOneLevelDirIfNotExists : LocalBase() {
 
     @Test
     fun create_chain_of_new_dirs() = runBlocking {
+
         val subdirNames = List(subdirsDepth) { randomId }
-        repeat(subdirNames.size) { i ->
-            val partialSubdirNames = subdirNames.subList(0,i).toTypedArray()
+
+        repeat(subdirNames.size-1) { i ->
+
+            val partialSubdirNames = subdirNames.subList(0,i+1).toTypedArray()
             val subdirRelativePath = CloudWriter.mergeFilePaths(*partialSubdirNames)
-            val dirPath = cloudWriter.absolutePathFor(subdirRelativePath)
+
             Assert.assertEquals(
-                dirPath,
-                cloudWriter.createOneLevelDirIfNotExists(dirPath)
+                cloudWriter.absolutePathFor(subdirRelativePath),
+                cloudWriter.createOneLevelDirIfNotExists(subdirRelativePath)
             )
         }
     }
@@ -104,9 +107,10 @@ class LocalCreateOneLevelDirIfNotExists : LocalBase() {
 
     @Test
     fun create_virtual_root_dir() = runBlocking {
+        val nativeRootWriter = LocalCloudWriter(ROOT_DIR)
         Assert.assertEquals(
             storageRootPath,
-            cloudWriter.createOneLevelDirIfNotExists(storageRootPath)
+            nativeRootWriter.createOneLevelDirIfNotExists(storageRootPath)
         )
     }
 
