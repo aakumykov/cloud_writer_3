@@ -45,16 +45,10 @@ class LocalCloudWriter(
     }
 
 
-    /*private fun createAbsoluteDirIfNotExists(path: String): String {
-        return if (fileExistsAbsolute(path)) path
-        else createAbsoluteDir(path)
-    }*/
-
     /**
      * @return Абсолютный путь к созданному каталогу.
      */
-    @Deprecated("Переделать логику")
-    /*override suspend fun createDeepDir(dirPath: String, isAbsolute: Boolean): String {
+    override suspend fun createDeepDir(deepDirName: String): String {
 
         fun splitPathToParts(path: String): List<String> = when {
             (path == CloudWriter.EMPTY_STRING) -> emptyList()
@@ -62,25 +56,21 @@ class LocalCloudWriter(
             else -> path.stripMultiSlashes().split(CloudWriter.DS).filterNot { it.isEmpty() }
         }
 
-        val pathParts = splitPathToParts(dirPath)
+        val pathParts = splitPathToParts(deepDirName)
 
         return if (pathParts.isNotEmpty()) {
-            splitPathToParts(dirPath)
-                .reduce { acc, s ->
-                    // TODO: использовать ClourWriter.mergePathParts() ?
-                    (acc + CloudWriter.DS + s).also { partialDeepPath ->
-                        createOneLevelDir(partialDeepPath, isAbsolute)
-                    }
-                }.also { fullDeepPath ->
-                    createOneLevelDir(fullDeepPath, isAbsolute)
+            splitPathToParts(deepDirName)
+                .reduce { currentPathIntoDeep, nextDirIntoDeep ->
+                    createOneLevelDir(currentPathIntoDeep)
+                    CloudWriter.mergeFilePaths(currentPathIntoDeep, nextDirIntoDeep)
+                }.let { fullDeepPath ->
+                    createOneLevelDir(fullDeepPath)
                 }
         } else {
-            (if (isAbsolute) dirPath
-            else virtualRootPath).let {
-                it
-            }
+            virtualRootPath
         }
-    }*/
+    }
+
 
 
     override suspend fun createDeepDir(parentPath: String, deepDirName: String): String {
