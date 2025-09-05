@@ -32,8 +32,12 @@ class LocalCloudWriter(
 
 
     override suspend fun createOneLevelDirIfNotExists(dirPath: String): String {
-        return if (fileExists(dirPath)) absolutePathFor(dirPath)
-        else createOneLevelDir(dirPath)
+        return if (fileExists(virtualRootPlus(dirPath))) {
+            absolutePathFor(dirPath)
+        }
+        else {
+            createOneLevelDir(dirPath)
+        }
     }
 
     override suspend fun createOneLevelDirIfNotExists(parentPath: String, childDirName: String): String {
