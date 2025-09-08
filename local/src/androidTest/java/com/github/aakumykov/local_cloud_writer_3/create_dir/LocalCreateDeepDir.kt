@@ -1,15 +1,16 @@
 package com.github.aakumykov.local_cloud_writer_3.create_dir
 
+import com.github.aakumykov.cloud_writer_3.CloudWriter
 import com.github.aakumykov.local_cloud_writer_3.base.LocalBase
 import com.github.aakumykov.local_cloud_writer_3.utils.randomId
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Test
+import kotlin.random.Random
 
 class LocalCreateDeepDir : LocalBase() {
 
     private val deepDirMaxDepth = 10
-    private val illegalNameCheckingIterations = deepDirMaxDepth
 
 /**
  *
@@ -27,7 +28,7 @@ class LocalCreateDeepDir : LocalBase() {
         repeat(deepDirMaxDepth) { i ->
             val names = List(i+1) { randomId }
 
-            val expectedDirPath = cloudWriter.absolutePathFor(names)
+            val expectedDirPath = cloudWriter.absolutePathFor(CloudWriter.mergeFilePaths(* names.toTypedArray()))
             val createdPath = cloudWriter.createDeepDir(names)
 
             Assert.assertEquals(expectedDirPath, createdPath)
@@ -37,20 +38,37 @@ class LocalCreateDeepDir : LocalBase() {
 
     @Test
     fun create_partially_existing_deep_dirs_with_different_levels() = runBlocking {
-        repeat(deepDirMaxDepth) { i ->
-            val names = List(i+1) { randomId }
 
-            val expectedDirPath = cloudWriter.absolutePathFor(names)
-            val createdPath = cloudWriter.createDeepDir(names)
+        val deepDeerDepthAddition = 2
 
-            Assert.assertEquals(expectedDirPath, createdPath)
+        repeat(deepDirMaxDepth + deepDeerDepthAddition) { i ->
+            if (i >= deepDeerDepthAddition) {
+                val names = List(i + deepDeerDepthAddition) { randomId }
+
+                val partialNamesSize = Random.nextInt(1,names.size)
+                val partialNames = names.subList(0, partialNamesSize).toTypedArray()
+
+                cloudWriter.createDeepDir(partialNames.toList())
+
+                val expectedPath = cloudWriter.absolutePathFor(CloudWriter.mergeFilePaths(* names.toTypedArray()))
+                val createdPath = cloudWriter.createDeepDir(names)
+
+                println("EXPECTED: $expectedPath")
+                println("CREATED: $createdPath")
+                println("-".repeat(10))
+
+                Assert.assertEquals(
+                    expectedPath,
+                    createdPath
+                )
+            }
         }
     }
 
 
-    @Test
+    /*@Test
     fun create_deep_dir_with_some_illegal_name_throws_exception() {
-        /*repeat(illegalNameCheckingIterations) {
+        *//*repeat(illegalNameCheckingIterations) {
 
             val names: List<String> = List(deepDirMaxDepth) { i -> "d$i" }
                 .toMutableList()
@@ -66,6 +84,8 @@ class LocalCreateDeepDir : LocalBase() {
                     )
                 }
             }
-        }*/
-    }
+        }*//*
+    }*/
+
+
 }

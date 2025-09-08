@@ -32,10 +32,6 @@ interface CloudWriter {
         return mergeFilePaths(virtualRootPath, dirName)
     }
 
-    fun absolutePathFor(dirNames: List<String>): String {
-        return mergeFilePaths(virtualRootPath, mergeFilePaths(* dirNames.toTypedArray()))
-    }
-
 
     /**
      * Проверяет наличие файла/каталога.

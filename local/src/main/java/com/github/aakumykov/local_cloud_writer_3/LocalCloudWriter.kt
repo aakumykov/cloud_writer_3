@@ -52,7 +52,7 @@ class LocalCloudWriter(
         return if (names.isNotEmpty()) {
             names
                 .reduce { currentPathIntoDeep, nextDirIntoDeep ->
-                    createOneLevelDir(currentPathIntoDeep)
+                    createOneLevelDirIfNotExists(currentPathIntoDeep)
                     CloudWriter.mergeFilePaths(currentPathIntoDeep, nextDirIntoDeep)
                 }.let { fullDeepPath ->
                     createOneLevelDir(fullDeepPath)
