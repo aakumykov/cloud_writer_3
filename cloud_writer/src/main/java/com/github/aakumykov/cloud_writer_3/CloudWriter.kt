@@ -32,6 +32,10 @@ interface CloudWriter {
         return mergeFilePaths(virtualRootPath, dirName)
     }
 
+    fun absolutePathFor(dirNames: List<String>): String {
+        return mergeFilePaths(virtualRootPath, mergeFilePaths(* dirNames.toTypedArray()))
+    }
+
 
     /**
      * Проверяет наличие файла/каталога.
@@ -93,7 +97,7 @@ interface CloudWriter {
      * @throws [IOException], [CloudWriterException]
      */
     @Throws(IOException::class, CloudWriterException::class)
-    suspend fun createDeepDir(names: Iterable<String>): String
+    suspend fun createDeepDir(names: List<String>): String
 
 
 

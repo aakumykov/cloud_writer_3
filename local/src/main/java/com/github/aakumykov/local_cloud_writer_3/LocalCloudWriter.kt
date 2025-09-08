@@ -3,7 +3,6 @@ package com.github.aakumykov.local_cloud_writer_3
 import com.github.aakumykov.cloud_writer_3.BasicCloudWriter
 import com.github.aakumykov.cloud_writer_3.CloudWriter
 import com.github.aakumykov.cloud_writer_3.CloudWriterException
-import com.github.aakumykov.cloud_writer_3.extensions.stripMultiSlashes
 import com.github.aakumykov.copy_between_streams_with_counting.copyBetweenStreamsWithCounting
 import kotlinx.coroutines.suspendCancellableCoroutine
 import java.io.File
@@ -46,14 +45,12 @@ class LocalCloudWriter(
 
 
     /**
+     *
      * @return Абсолютный путь к созданному каталогу.
      */
-    override suspend fun createDeepDir(names: Iterable<String>): String {
-
-
-
-        return if (pathParts.isNotEmpty()) {
-            splitPathToParts(names)
+    override suspend fun createDeepDir(names: List<String>): String {
+        return if (names.isNotEmpty()) {
+            names
                 .reduce { currentPathIntoDeep, nextDirIntoDeep ->
                     createOneLevelDir(currentPathIntoDeep)
                     CloudWriter.mergeFilePaths(currentPathIntoDeep, nextDirIntoDeep)
