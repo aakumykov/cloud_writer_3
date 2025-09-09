@@ -1,6 +1,7 @@
 package com.github.aakumykov.local_cloud_writer_3.create_dir
 
 import com.github.aakumykov.cloud_writer_3.CloudWriter
+import com.github.aakumykov.cloud_writer_3.CloudWriterException
 import com.github.aakumykov.local_cloud_writer_3.base.LocalBase
 import com.github.aakumykov.local_cloud_writer_3.utils.randomId
 import kotlinx.coroutines.runBlocking
@@ -70,5 +71,12 @@ class LocalCreateDeepDir : LocalBase() {
     }
 
 
+    @Test
+    fun create_deep_dir_with_some_illegal_name_throws_exception() {
+        Assert.assertThrows(CloudWriterException::class.java) {
+            runBlocking {
 
+            }
+        }
+    }
 }
