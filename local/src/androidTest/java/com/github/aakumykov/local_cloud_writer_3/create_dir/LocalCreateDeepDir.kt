@@ -73,9 +73,14 @@ class LocalCreateDeepDir : LocalBase() {
 
     @Test
     fun create_deep_dir_with_some_illegal_name_throws_exception() {
-        Assert.assertThrows(CloudWriterException::class.java) {
-            runBlocking {
-
+        repeat(deepDirMaxDepth) {
+            Assert.assertThrows(CloudWriterException::class.java) {
+                runBlocking {
+                    val dirNames = List(deepDirMaxDepth) { randomId }
+                        .toMutableList()
+                        .apply { set(Random.nextInt(0, deepDirMaxDepth), ILLEGAL_DIR_NAME) }
+                    cloudWriter.createDeepDir(dirNames)
+                }
             }
         }
     }
