@@ -39,19 +39,23 @@ class LocalCreateDeepDir : LocalBase() {
     @Test
     fun create_partially_existing_deep_dirs_with_different_levels() = runBlocking {
 
+        suspend fun createRandomPartialPathOfDeepDir(deepDirPathNames: List<String>) {
+            val partialNamesSize = Random.nextInt(1, deepDirPathNames.size)
+            val partialNames = deepDirPathNames.subList(0, partialNamesSize).toTypedArray()
+            cloudWriter.createDeepDir(partialNames.toList())
+        }
+
         val deepDeerDepthAddition = 2
 
         repeat(deepDirMaxDepth + deepDeerDepthAddition) { i ->
             if (i >= deepDeerDepthAddition) {
-                val names = List(i + deepDeerDepthAddition) { randomId }
 
-                val partialNamesSize = Random.nextInt(1,names.size)
-                val partialNames = names.subList(0, partialNamesSize).toTypedArray()
+                val deepDirPathNames = List(i + deepDeerDepthAddition) { randomId }
 
-                cloudWriter.createDeepDir(partialNames.toList())
+                createRandomPartialPathOfDeepDir(deepDirPathNames)
 
-                val expectedPath = cloudWriter.absolutePathFor(CloudWriter.mergeFilePaths(* names.toTypedArray()))
-                val createdPath = cloudWriter.createDeepDir(names)
+                val expectedPath = cloudWriter.absolutePathFor(CloudWriter.mergeFilePaths(* deepDirPathNames.toTypedArray()))
+                val createdPath = cloudWriter.createDeepDir(deepDirPathNames)
 
                 println("EXPECTED: $expectedPath")
                 println("CREATED: $createdPath")
@@ -65,27 +69,6 @@ class LocalCreateDeepDir : LocalBase() {
         }
     }
 
-
-    /*@Test
-    fun create_deep_dir_with_some_illegal_name_throws_exception() {
-        *//*repeat(illegalNameCheckingIterations) {
-
-            val names: List<String> = List(deepDirMaxDepth) { i -> "d$i" }
-                .toMutableList()
-                .apply {
-                    add(ILLEGAL_DIR_NAME)
-                    shuffle()
-                }
-
-            Assert.assertThrows(CloudWriterException::class.java) {
-                runBlocking {
-                    cloudWriter.createDeepDir(
-                        CloudWriter.mergeFilePaths(* names.toTypedArray())
-                    )
-                }
-            }
-        }*//*
-    }*/
 
 
 }
