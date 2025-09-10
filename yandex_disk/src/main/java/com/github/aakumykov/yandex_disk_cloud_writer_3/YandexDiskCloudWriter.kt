@@ -113,9 +113,9 @@ class YandexDiskCloudWriter(
     }
 
 
-    override suspend fun createDeepDirIfNotExists(dirPath: String, isRelative: Boolean): String {
-        return if (isRelative) createDeepDirIfNotExistAbsolute(virtualRootPlus(dirPath))
-        else createDeepDirIfNotExistAbsolute(dirPath)
+    override suspend fun createDeepDirIfNotExists(dirPathNames: List<String>): String {
+        return if (isRelative) createDeepDirIfNotExistAbsolute(virtualRootPlus(dirPathNames))
+        else createDeepDirIfNotExistAbsolute(dirPathNames)
     }
 
     override suspend fun deleteFileOrEmptyDir(dirPath: String, isRelative: Boolean): String {

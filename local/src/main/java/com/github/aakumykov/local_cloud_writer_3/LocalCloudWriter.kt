@@ -67,9 +67,10 @@ class LocalCloudWriter(
     }
 
 
-    override suspend fun createDeepDirIfNotExists(dirPath: String, isRelative: Boolean): String {
-        return if (isRelative) createAbsoluteDeepDirIfNotExists(virtualRootPlus(dirPath))
-        else createAbsoluteDeepDirIfNotExists(dirPath)
+    override suspend fun createDeepDirIfNotExists(dirPathNames: List<String>): String {
+        val fullRelativeName = CloudWriter.mergeFilePaths(* dirPathNames.toTypedArray())
+        return if (fileExists(fullRelativeName)) virtualRootPlus(fullRelativeName)
+        else createDeepDir(dirPathNames)
     }
 
 
@@ -85,13 +86,6 @@ class LocalCloudWriter(
         }
     }
 
-
-    private suspend fun createAbsoluteDeepDirIfNotExists(path: String): String {
-        return if (fileExists(path)) path
-        else iterateOverDirsInPathFromRoot(path) { partialDeepPath ->
-            createOneLevelDirIfNotExists(partialDeepPath)
-        }
-    }
 
 
     override suspend fun fileExists(path: String, isAbsolute: Boolean): Boolean {

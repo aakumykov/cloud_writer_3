@@ -28,8 +28,13 @@ interface CloudWriter {
 
     val validFileNameRegex: Regex
 
+    // TODO: тестировать!
     fun absolutePathFor(dirName: String): String {
         return mergeFilePaths(virtualRootPath, dirName)
+    }
+
+    fun absolutePathFor(deepDirNames: List<String>): String {
+        return mergeFilePaths(virtualRootPath, * deepDirNames.toTypedArray())
     }
 
     /**
@@ -114,7 +119,7 @@ interface CloudWriter {
 
     // FIXME: убрать лишний аргумент
     @Throws(IOException::class, CloudWriterException::class)
-    suspend fun createDeepDirIfNotExists(dirPath: String, isAbsolute: Boolean): String
+    suspend fun createDeepDirIfNotExists(dirPathNames: List<String>): String
 
 
 
