@@ -32,7 +32,21 @@ interface CloudWriter {
         return mergeFilePaths(virtualRootPath, dirName)
     }
 
-
+    /**
+     * Проверяет, что в наборе имён, составляющих путь к "глубокому каталогу", нет запрещённых элементов.
+     * К которым относятся:
+     * 1) строка нулевой длины ("") и корневой каталог ("/") --> ведёт к изменению запрашиваемого пути;
+     * 2) нулевой символ --> запрещён в файловой системе unix-подобных систем.
+     */
+    fun isDeepPathContainsIllegalNames(deepDirNames: List<String>): Boolean {
+        return deepDirNames
+            .map { dirName ->
+                if (dirName in arrayOf(ROOT_DIR_NAME, EMPTY_STRING)) true
+                else if (dirName.contains(ZERO_CHAR_STRING, true)) true
+                else false
+            }
+            .contains(true)
+    }
 
     /**
      * Проверяет наличие файла/каталога.
@@ -162,15 +176,5 @@ interface CloudWriter {
 
         fun mergeFilePaths(vararg paths: String): String
             = paths.joinToString(DS).stripMultiSlashes()
-
-        fun isDeepPathContainsIllegalNames(deepDirNames: List<String>): Boolean {
-            return deepDirNames
-                .map { dirName ->
-                    if (dirName in arrayOf(ROOT_DIR_NAME, ZERO_CHAR_STRING, EMPTY_STRING)) true
-                    else if (dirName.contains(ZERO_CHAR_STRING, true)) true
-                    else false
-                }
-                .contains(true)
-        }
     }
 }
