@@ -40,13 +40,4 @@ abstract class BasicCloudWriter : CloudWriter {
                 path
             }
     }
-
-
-    override fun isIllegal(dirName: String): Boolean {
-        return if (dirName in arrayOf(ROOT_DIR_NAME, ZERO_CHAR_STRING)) true
-        else if (dirName.contains(ZERO_CHAR_STRING, true)) true
-        else false
-    }
-
-    override fun isIllegal(deepDirNames: List<String>): Boolean = deepDirNames.any { isIllegal(it) }
 }

@@ -32,9 +32,7 @@ interface CloudWriter {
         return mergeFilePaths(virtualRootPath, dirName)
     }
 
-    fun isIllegal(dirName: String): Boolean
 
-    fun isIllegal(deepDirNames: List<String>): Boolean
 
     /**
      * Проверяет наличие файла/каталога.
@@ -159,8 +157,20 @@ interface CloudWriter {
          */
         const val DS = "/"
         const val EMPTY_STRING = ""
+        const val ROOT_DIR_NAME = DS
+        val ZERO_CHAR_STRING = String(charArrayOf(Char(0)))
 
         fun mergeFilePaths(vararg paths: String): String
             = paths.joinToString(DS).stripMultiSlashes()
+
+        fun isDeepPathContainsIllegalNames(deepDirNames: List<String>): Boolean {
+            return deepDirNames
+                .map { dirName ->
+                    if (dirName in arrayOf(ROOT_DIR_NAME, ZERO_CHAR_STRING, EMPTY_STRING)) true
+                    else if (dirName.contains(ZERO_CHAR_STRING, true)) true
+                    else false
+                }
+                .contains(true)
+        }
     }
 }
