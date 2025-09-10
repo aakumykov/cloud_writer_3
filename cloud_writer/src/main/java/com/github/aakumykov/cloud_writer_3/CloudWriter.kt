@@ -32,6 +32,9 @@ interface CloudWriter {
         return mergeFilePaths(virtualRootPath, dirName)
     }
 
+    fun isIllegal(dirName: String): Boolean
+
+    fun isIllegal(deepDirNames: List<String>): Boolean
 
     /**
      * Проверяет наличие файла/каталога.
@@ -97,6 +100,7 @@ interface CloudWriter {
 
 
 
+    // FIXME: убрать лишний аргумент
     @Throws(IOException::class, CloudWriterException::class)
     suspend fun createDeepDirIfNotExists(dirPath: String, isAbsolute: Boolean): String
 

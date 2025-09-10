@@ -49,6 +49,10 @@ class LocalCloudWriter(
      * @return Абсолютный путь к созданному каталогу.
      */
     override suspend fun createDeepDir(names: List<String>): String {
+
+        if (isIllegal(names))
+            throw IllegalArgumentException("Argument contains illegal element: $names")
+
         return if (names.isNotEmpty()) {
             names
                 .reduce { currentPathIntoDeep, nextDirIntoDeep ->
