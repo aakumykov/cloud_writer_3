@@ -50,7 +50,7 @@ class LocalCloudWriter(
      */
     override suspend fun createDeepDir(names: List<String>): String {
 
-        if (isDeepPathContainsIllegalNames(names))
+        if (CloudWriter.isDeepPathContainsIllegalNames(names))
             throw IllegalArgumentException("Argument contains illegal element: $names")
 
         return if (names.isNotEmpty()) {

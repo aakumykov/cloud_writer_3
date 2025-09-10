@@ -105,7 +105,7 @@ class LocalCreateDeepDir : LocalBase() {
     @Test
     fun create_deep_dir_with_empty_or_root_intermediate_name() {
         repeat(deepDirMaxDepth) {
-            Assert.assertThrows(CloudWriterException::class.java) {
+            Assert.assertThrows(IllegalArgumentException::class.java) {
                 runBlocking {
                     val dirNames = List(deepDirMaxDepth-2) { randomId }
                         .toMutableList()
