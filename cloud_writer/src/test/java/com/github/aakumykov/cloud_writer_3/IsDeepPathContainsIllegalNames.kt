@@ -49,18 +49,5 @@ class IsDeepPathContainsIllegalNames {
     }
 
 
-    @Test
-    fun qwerty() {
-//        Random.Default
-//            .nextBytes(10)
-//            .filterNot { Char(0).equals(it) }
-
-        val min = Char.MIN_VALUE.digitToInt()
-        val max = Char.MAX_VALUE.digitToInt()
-        println(min+max)
-//        Random.nextInt(, Char.)
-    }
-
-
     private val randomId: String get() = UUID.randomUUID().toString()
 }
