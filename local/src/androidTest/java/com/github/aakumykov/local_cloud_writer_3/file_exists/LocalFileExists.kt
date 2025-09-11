@@ -1,6 +1,7 @@
 package com.github.aakumykov.local_cloud_writer_3.file_exists
 
 import com.github.aakumykov.cloud_writer_3.CloudWriter
+import com.github.aakumykov.local_cloud_writer_3.LocalCloudWriter
 import com.github.aakumykov.local_cloud_writer_3.base.LocalBase
 import com.github.aakumykov.local_cloud_writer_3.utils.randomId
 import com.github.aakumykov.local_cloud_writer_3.utils.storageRootPath
@@ -35,9 +36,6 @@ import java.io.File
  */
 class LocalFileExists : LocalBase() {
 
-    //
-    // Абсолютныя
-    //
     @Test
     fun native_linux_root_dir_exists() = runBlocking {
         Assert.assertTrue(
@@ -48,10 +46,8 @@ class LocalFileExists : LocalBase() {
 
     @Test
     fun storage_dir_exists() = runBlocking {
-        val res = cloudWriter.fileExists(storageRootPath)
-        Assert.assertTrue(
-            res
-        )
+        val rootCloudWriter = LocalCloudWriter(ROOT_DIR)
+        Assert.assertTrue(rootCloudWriter.fileExists(storageRootPath))
     }
 
 
