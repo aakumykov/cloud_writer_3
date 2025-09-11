@@ -6,6 +6,7 @@ import com.github.aakumykov.cloud_writer_3.CloudWriter
 import com.github.aakumykov.copy_between_streams_with_counting.copyBetweenStreamsWithCounting
 import com.github.aakumykov.yandex_disk_cloud_writer_3.ext.toCloudWriterException
 import com.google.gson.Gson
+import com.yandex.disk.rest.exceptions.http.NotImplementedException
 import com.yandex.disk.rest.json.Link
 import kotlinx.coroutines.CancellableContinuation
 import kotlinx.coroutines.suspendCancellableCoroutine
@@ -38,22 +39,10 @@ class YandexDiskCloudWriter(
         yandexDiskClientCreator.create(authToken)
     }
 
-    override suspend fun createOneLevelDir(dirName: String): String {
-        return if (isAbsolute) createAbsoluteDir(dirName)
-        else createAbsoluteDir(virtualRootPlus(dirName))
-    }
-
-    override suspend fun createOneLevelDir(
-        parentPath: String,
-        childName: String
-    ): String {
-        return createOneLevelDir(CloudWriter.mergeFilePaths(parentPath, childName))
-    }
-
-    private suspend fun createAbsoluteDir(path: String): String = suspendCancellableCoroutine { cc ->
+    override suspend fun createOneLevelDir(dirName: String): String = suspendCancellableCoroutine { cc ->
 
         val url = apiURL(queryPairs = arrayOf(
-            PARAM_PATH to path
+            PARAM_PATH to dirName
         ))
 
         val request = apiRequest(url) {
@@ -64,16 +53,27 @@ class YandexDiskCloudWriter(
 
         executeCall(call, cc) { response: Response ->
             when(response.code) {
-                201 -> cc.resume(path)
+                201 -> cc.resume(dirName)
                 else -> throwCloudWriterException(response)
             }
         }
     }
 
+    override suspend fun createDeepDir(deepName: List<String>): String {
+        throw RuntimeException("createDeepDir(deepName: List<String>)")
+    }
+
+    override suspend fun createOneLevelDir(
+        parentPath: String,
+        childName: String
+    ): String {
+        return createOneLevelDir(CloudWriter.mergeFilePaths(parentPath, childName))
+    }
+
 
     override suspend fun createOneLevelDirIfNotExists(dirPath: String): String {
-        return if (isAbsolute) createDirIfNotExistAbsolute(dirPath)
-        else createDirIfNotExistAbsolute(virtualRootPlus(dirPath))
+        return if (!fileExists(dirPath)) createOneLevelDir(dirPath)
+        else virtualRootPlus(dirPath)
     }
 
     override suspend fun createOneLevelDirIfNotExists(
@@ -83,16 +83,6 @@ class YandexDiskCloudWriter(
         return createOneLevelDirIfNotExists(CloudWriter.mergeFilePaths(parentPath, childDirName))
     }
 
-    private suspend fun createDirIfNotExistAbsolute(path: String): String {
-        return if (!fileExistsAbsolute(path)) createAbsoluteDir(path)
-        else path
-    }
-
-
-    override suspend fun createDeepDir(dirPath: String, isRelative: Boolean): String {
-        return if (isRelative) createDeepDirAbsolute(virtualRootPlus(dirPath))
-        else createDeepDirAbsolute(dirPath)
-    }
 
 
     // TODO: унифицировать с [LocalCloudWriter2.createDeepDir]
@@ -113,9 +103,10 @@ class YandexDiskCloudWriter(
     }
 
 
-    override suspend fun createDeepDirIfNotExists(dirPathNames: List<String>): String {
-        return if (isRelative) createDeepDirIfNotExistAbsolute(virtualRootPlus(dirPathNames))
-        else createDeepDirIfNotExistAbsolute(dirPathNames)
+    override suspend fun createDeepDirIfNotExists(deepName: List<String>): String {
+        val mergedDeepName = CloudWriter.mergeFilePaths(* deepName.toTypedArray())
+        return if (!fileExists(mergedDeepName)) createDeepDir(deepName)
+        else virtualRootPlus(mergedDeepName)
     }
 
     override suspend fun deleteFileOrEmptyDir(dirPath: String, isRelative: Boolean): String {
@@ -170,10 +161,22 @@ class YandexDiskCloudWriter(
     }
 
 
-    override suspend fun fileExists(path: String): Boolean {
-        return if (isAbsolute) fileExistsAbsolute(path)
-        else fileExistsAbsolute(virtualRootPlus(path))
+    override suspend fun fileExists(path: String): Boolean = suspendCancellableCoroutine { cc ->
+
+    val url = pathApiURL(path)
+
+    val request = apiRequest(url) {}
+
+    val call = yandexDiskClient.newCall(request)
+
+    executeCall(call, cc) { response ->
+        when(response.code) {
+            200 -> cc.resume(true)
+            404 -> cc.resume(false)
+            else -> throwCloudWriterException(response)
+        }
     }
+}
 
     override suspend fun fileExists(
         dirPath: String,
@@ -182,23 +185,6 @@ class YandexDiskCloudWriter(
         return fileExists(CloudWriter.mergeFilePaths(dirPath, fileName))
     }
 
-
-    private suspend fun fileExistsAbsolute(path: String): Boolean = suspendCancellableCoroutine { cc ->
-
-        val url = pathApiURL(path)
-
-        val request = apiRequest(url) {}
-
-        val call = yandexDiskClient.newCall(request)
-
-        executeCall(call, cc) { response ->
-            when(response.code) {
-                200 -> cc.resume(true)
-                404 -> cc.resume(false)
-                else -> throwCloudWriterException(response)
-            }
-        }
-    }
 
     private fun throwCloudWriterException(response: Response) {
         throw response.toCloudWriterException

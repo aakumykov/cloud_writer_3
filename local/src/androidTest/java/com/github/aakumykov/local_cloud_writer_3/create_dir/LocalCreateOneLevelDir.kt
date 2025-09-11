@@ -34,13 +34,6 @@ class LocalCreateOneLevelDir : LocalBase() {
      */
 
     @Test
-    fun creates_dir_with_zero_char_in_name(): Unit = runBlocking{
-        cloudWriter.createOneLevelDir(
-            "q${String(charArrayOf(Char(0)))}"
-        )
-    }
-
-    @Test
     fun simple_dir_is_created() = runBlocking {
         val dirName = randomId
         val expectedDirPath = cloudWriter.absolutePathFor(dirName)

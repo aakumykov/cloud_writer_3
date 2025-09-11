@@ -71,9 +71,9 @@ class LocalCreateDeepDir : LocalBase() {
                 val expectedPath = cloudWriter.absolutePathFor(CloudWriter.mergeFilePaths(* deepDirPathNames.toTypedArray()))
                 val createdPath = cloudWriter.createDeepDir(deepDirPathNames)
 
-                println("EXPECTED: $expectedPath")
+                /*println("EXPECTED: $expectedPath")
                 println("CREATED: $createdPath")
-                println("-".repeat(10))
+                println("-".repeat(10))*/
 
                 Assert.assertEquals(
                     expectedPath,
@@ -83,38 +83,19 @@ class LocalCreateDeepDir : LocalBase() {
         }
     }
 
-
     @Test
-    fun create_deep_dir_with_some_illegal_name_throws_exception() {
-        repeat(deepDirMaxDepth) {
-            Assert.assertThrows(CloudWriterException::class.java) {
-                runBlocking {
-                    val dirNames = List(deepDirMaxDepth-1) { randomId }
-                        .toMutableList()
-                        .apply {
-                            add(ILLEGAL_DIR_NAME)
-                        }.shuffled()
+    fun throws_exception_creating_deep_dir_with_empty_or_root_intermediate_name() {
+        listOf(ILLEGAL_DIR_NAME, EMPTY_DIR_NAME, ROOT_DIR).forEach { badName ->
+            repeat(deepDirMaxDepth) { len ->
 
-                    cloudWriter.createDeepDir(dirNames)
-                }
-            }
-        }
-    }
+                val deepNameWithBadPart = nameForDeepDir(len).toMutableList()
+                    .apply { add(badName) }
+                    .shuffled()
 
-
-    @Test
-    fun create_deep_dir_with_empty_or_root_intermediate_name() {
-        repeat(deepDirMaxDepth) {
-            Assert.assertThrows(IllegalArgumentException::class.java) {
-                runBlocking {
-                    val dirNames = List(deepDirMaxDepth-2) { randomId }
-                        .toMutableList()
-                        .apply {
-                            add(ROOT_DIR)
-                            add(EMPTY_DIR_NAME)
-                        }.shuffled()
-
-                    cloudWriter.createDeepDir(dirNames)
+                Assert.assertThrows(IllegalArgumentException::class.java) {
+                    runBlocking {
+                        cloudWriter.createDeepDir(deepNameWithBadPart)
+                    }
                 }
             }
         }

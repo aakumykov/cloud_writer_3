@@ -113,13 +113,11 @@ interface CloudWriter {
      * @throws [IOException], [CloudWriterException]
      */
     @Throws(IOException::class, CloudWriterException::class)
-    suspend fun createDeepDir(names: List<String>): String
+    suspend fun createDeepDir(deepName: List<String>): String
 
 
-
-    // FIXME: убрать лишний аргумент
     @Throws(IOException::class, CloudWriterException::class)
-    suspend fun createDeepDirIfNotExists(dirPathNames: List<String>): String
+    suspend fun createDeepDirIfNotExists(deepName: List<String>): String
 
 
 

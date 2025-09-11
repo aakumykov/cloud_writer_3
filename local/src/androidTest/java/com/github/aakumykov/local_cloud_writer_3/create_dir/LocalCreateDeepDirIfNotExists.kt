@@ -28,25 +28,12 @@ class LocalCreateDeepDirIfNotExists : LocalBase() {
      *  - создание каталога с нулевыми символами именами [create_deep_dir_with_illegal_dir_name]
      */
 
-    private val deepDirMaxLength = 10
-
-    private fun nameForDeepDir(depth: Int): List<String> = buildList {
-        repeat(depth) {
-            add(randomId)
-        }
-    }
-
-    private fun nameForDeepDirWithIllegalPartInRandomPlace(len: Int, illegalDirName: String): List<String> {
-        return nameForDeepDir(len)
-            .toMutableList()
-            .apply { add(illegalDirName) }
-            .shuffled()
-    }
+    private val deepDirMaxDepth = 10
 
 
     @Test
     fun create_new_deep_dir(): Unit = runBlocking {
-        repeat(deepDirMaxLength) { i ->
+        repeat(deepDirMaxDepth) { i ->
             val n = i+1
             val names = nameForDeepDir(n)
             println(names)
@@ -59,12 +46,20 @@ class LocalCreateDeepDirIfNotExists : LocalBase() {
 
     @Test
     fun create_existing_deep_dir(): Unit = runBlocking {
-        repeat(deepDirMaxLength) { i ->
+        repeat(deepDirMaxDepth) { i ->
+
             val n = i+1
             val names = nameForDeepDir(n)
-            cloudWriter.createDeepDir(names)
+
+            val expectedPath = cloudWriter.absolutePathFor(names)
+
             Assert.assertEquals(
-                cloudWriter.absolutePathFor(names),
+                expectedPath,
+                cloudWriter.createDeepDir(names)
+            )
+
+            Assert.assertEquals(
+                expectedPath,
                 cloudWriter.createDeepDirIfNotExists(names)
             )
         }
@@ -73,7 +68,7 @@ class LocalCreateDeepDirIfNotExists : LocalBase() {
 
     @Test
     fun create_partially_existing_deep_dir() = runBlocking {
-        repeat(deepDirMaxLength) { i ->
+        repeat(deepDirMaxDepth) { i ->
             val n = i+2
 
             val names = nameForDeepDir(n)
@@ -81,7 +76,7 @@ class LocalCreateDeepDirIfNotExists : LocalBase() {
 
             Assert.assertEquals(
                 cloudWriter.absolutePathFor(partialNames),
-                cloudWriter.createDeepDirIfNotExists(partialNames)
+                cloudWriter.createDeepDir(partialNames)
             )
 
             Assert.assertEquals(
@@ -130,17 +125,15 @@ class LocalCreateDeepDirIfNotExists : LocalBase() {
 
 
     @Test
-    fun create_deep_dir_with_illegal_dir_name() {
-        listOf(
-            ILLEGAL_DIR_NAME,
-            EMPTY_DIR_NAME,
-            ROOT_DIR
-        ).forEach { badName ->
-            repeat(deepDirMaxLength) { len ->
-                val deepDirName = nameForDeepDirWithIllegalPartInRandomPlace(len, badName)
+    fun throws_exception_when_creating_deep_dir_with_illegal_dir_name() {
+        listOf(ILLEGAL_DIR_NAME, EMPTY_DIR_NAME, ROOT_DIR).forEach { badName ->
+            repeat(deepDirMaxDepth) { len ->
+
+                val deepNameWithBadPart = nameForDeepDir(len).toMutableList().apply { add(badName) }.shuffled()
+
                 Assert.assertThrows(IllegalArgumentException::class.java) {
                     runBlocking {
-                        cloudWriter.createDeepDirIfNotExists(deepDirName)
+                        cloudWriter.createDeepDirIfNotExists(deepNameWithBadPart)
                     }
                 }
             }
