@@ -57,11 +57,11 @@ interface CloudWriter {
      * Проверяет наличие файла/каталога.
      */
     @Throws(IOException::class, CloudWriterException::class)
-    suspend fun fileExists(path: String, isAbsolute: Boolean = false): Boolean
+    suspend fun fileExists(path: String): Boolean
 
 
     @Throws(IOException::class, CloudWriterException::class)
-    suspend fun fileExists(dirPath: String, fileName: String, isAbsolute: Boolean = false): Boolean
+    suspend fun fileExists(dirPath: String, fileName: String): Boolean
 
 
     /**

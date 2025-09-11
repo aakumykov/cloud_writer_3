@@ -11,7 +11,7 @@ class FileExistsUnitTest {
     @Test
     fun root_dir_exists(): Unit = runBlocking {
         Assert.assertTrue(
-            yandexDiskCloudWriter.fileExists(ROOT_DIR, false)
+            yandexDiskCloudWriter.fileExists(ROOT_DIR)
         )
     }
 
@@ -19,8 +19,7 @@ class FileExistsUnitTest {
     fun unique_path_does_not_exists(): Unit = runBlocking {
         Assert.assertFalse(
             yandexDiskCloudWriter.fileExists(
-                uniquePath,
-                false
+                uniquePath
             )
         )
     }

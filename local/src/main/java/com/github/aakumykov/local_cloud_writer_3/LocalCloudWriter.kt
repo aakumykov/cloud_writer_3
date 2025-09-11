@@ -86,21 +86,15 @@ class LocalCloudWriter(
         }
     }
 
-
-
-    override suspend fun fileExists(path: String, isAbsolute: Boolean): Boolean {
-        return if (isAbsolute) fileExists(path)
-        else fileExists(virtualRootPlus(path))
+    override suspend fun fileExists(path: String): Boolean {
+        val realPath = virtualRootPlus(path)
+        val file = File(realPath)
+        return file.exists()
     }
 
 
-    override suspend fun fileExists(dirPath: String, fileName: String, isAbsolute: Boolean): Boolean {
-        return fileExists(CloudWriter.mergeFilePaths(dirPath, fileName), isAbsolute)
-    }
-
-
-    private fun fileExists(path: String): Boolean {
-        return File(path).exists()
+    override suspend fun fileExists(dirPath: String, fileName: String): Boolean {
+        return fileExists(CloudWriter.mergeFilePaths(dirPath, fileName))
     }
 
 

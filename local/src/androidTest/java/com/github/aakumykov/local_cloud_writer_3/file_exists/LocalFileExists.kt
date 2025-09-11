@@ -48,8 +48,9 @@ class LocalFileExists : LocalBase() {
 
     @Test
     fun storage_dir_exists() = runBlocking {
+        val res = cloudWriter.fileExists(storageRootPath)
         Assert.assertTrue(
-            cloudWriter.fileExists(storageRootPath, isAbsolute = true)
+            res
         )
     }
 
@@ -69,7 +70,7 @@ class LocalFileExists : LocalBase() {
     @Test
     fun empty_dir_exists_as_it_equals_virtual_root() = runBlocking {
         Assert.assertTrue(
-            cloudWriter.fileExists(EMPTY_DIR_NAME, false)
+            cloudWriter.fileExists(EMPTY_DIR_NAME)
         )
     }
 
@@ -77,7 +78,7 @@ class LocalFileExists : LocalBase() {
     @Test
     fun virtual_root_exists() = runBlocking {
         Assert.assertTrue(
-            cloudWriter.fileExists(ROOT_DIR, false)
+            cloudWriter.fileExists(ROOT_DIR)
         )
     }
 
@@ -90,7 +91,7 @@ class LocalFileExists : LocalBase() {
 
         tempFile.also {
             Assert.assertTrue(
-                cloudWriter.fileExists(dirName, false)
+                cloudWriter.fileExists(dirName)
             )
         }
     }
@@ -99,7 +100,7 @@ class LocalFileExists : LocalBase() {
     @Test
     fun unexistent_path_does_not_exists() = runBlocking {
         Assert.assertFalse(
-            cloudWriter.fileExists(randomId, false)
+            cloudWriter.fileExists(randomId)
         )
     }
 

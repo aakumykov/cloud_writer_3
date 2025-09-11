@@ -165,22 +165,21 @@ class YandexDiskCloudWriter(
     }
 
     private suspend fun createDeepDirIfNotExistAbsolute(path: String): String {
-        return if (fileExists(path, false)) path
+        return if (fileExists(path)) path
         else createDeepDirAbsolute(path)
     }
 
 
-    override suspend fun fileExists(path: String, isAbsolute: Boolean): Boolean {
+    override suspend fun fileExists(path: String): Boolean {
         return if (isAbsolute) fileExistsAbsolute(path)
         else fileExistsAbsolute(virtualRootPlus(path))
     }
 
     override suspend fun fileExists(
         dirPath: String,
-        fileName: String,
-        isAbsolute: Boolean
+        fileName: String
     ): Boolean {
-        return fileExists(CloudWriter.mergeFilePaths(dirPath, fileName), isAbsolute)
+        return fileExists(CloudWriter.mergeFilePaths(dirPath, fileName))
     }
 
 
