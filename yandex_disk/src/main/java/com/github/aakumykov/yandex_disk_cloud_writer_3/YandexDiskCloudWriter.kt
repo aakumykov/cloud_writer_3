@@ -28,6 +28,7 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 
 class YandexDiskCloudWriter(
+    private val serverUrl: String = "https://cloud-api.yandex.net",
     private val authToken: String,
     private val yandexDiskClientCreator: YandexDiskOkHttpClientCreator,
     override val virtualRootPath: String = "/",
@@ -337,13 +338,15 @@ class YandexDiskCloudWriter(
     }
 
 
+    private val YANDEX_API_BASE get() = "${serverUrl}${YANDEX_API_PATH}"
+    private val UPLOAD_BASE_URL = "${YANDEX_API_BASE}/upload"
+    private val MOVE_BASE_URL = "${YANDEX_API_BASE}/move"
+
 
     companion object {
         val TAG: String = YandexDiskCloudWriter::class.java.simpleName
 
-        private const val YANDEX_API_BASE = "https://cloud-api.yandex.net/v1/disk/resources"
-        private const val UPLOAD_BASE_URL = "${YANDEX_API_BASE}/upload"
-        private const val MOVE_BASE_URL = "${YANDEX_API_BASE}/move"
+        const val YANDEX_API_PATH = "/v1/disk/resources"
 
         private const val PARAM_PATH = "path"
         private const val PARAM_FROM = "from"
