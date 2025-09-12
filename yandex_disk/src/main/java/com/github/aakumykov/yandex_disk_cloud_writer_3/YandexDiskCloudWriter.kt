@@ -6,7 +6,6 @@ import com.github.aakumykov.cloud_writer_3.CloudWriter
 import com.github.aakumykov.copy_between_streams_with_counting.copyBetweenStreamsWithCounting
 import com.github.aakumykov.yandex_disk_cloud_writer_3.ext.toCloudWriterException
 import com.google.gson.Gson
-import com.yandex.disk.rest.exceptions.http.NotImplementedException
 import com.yandex.disk.rest.json.Link
 import kotlinx.coroutines.CancellableContinuation
 import kotlinx.coroutines.suspendCancellableCoroutine
@@ -30,14 +29,14 @@ import kotlin.coroutines.resumeWithException
 class YandexDiskCloudWriter(
     private val serverUrl: String = "https://cloud-api.yandex.net",
     private val authToken: String,
-    private val yandexDiskClientCreator: YandexDiskOkHttpClientCreator,
+    private val yandexDiskOkhttpClientBuilder: YandexDiskOkhttpClientBuilder,
     override val virtualRootPath: String = "/",
     private val gson: Gson = Gson()
 )
     : BasicCloudWriter()
 {
     private val yandexDiskClient: OkHttpClient by lazy {
-        yandexDiskClientCreator.create(authToken)
+        yandexDiskOkhttpClientBuilder.create(authToken).build()
     }
 
     override suspend fun createOneLevelDir(dirName: String): String = suspendCancellableCoroutine { cc ->
@@ -359,5 +358,7 @@ class YandexDiskCloudWriter(
 
         private val DEFAULT_MEDIA_TYPE: MediaType = "application/octet-stream".toMediaType()
         private val EMPTY_REQUEST_BODY by lazy { "".toRequestBody(null) }
+
+        const val AUTH_HEADER_KEY = "Authorization"
     }
 }
