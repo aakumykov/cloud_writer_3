@@ -22,15 +22,19 @@ import okhttp3.Response
 import okio.BufferedSink
 import java.io.IOException
 import java.io.InputStream
+import java.net.URL
 import kotlin.coroutines.cancellation.CancellationException
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 
 class YandexDiskCloudWriter(
-    private val serverUrl: String = "https://cloud-api.yandex.net",
+    private val apiScheme: String = API_SCHEME,
+    private val apiHost: String = API_HOST,
+    private val apiPort: Int = 443,
+    private val apiPathBase: String = API_PATH_BASE,
     private val authToken: String,
     private val yandexDiskOkhttpClientBuilder: YandexDiskOkhttpClientBuilder,
-    override val virtualRootPath: String = "/",
+    override val virtualRootPath: String = CloudWriter.ROOT_DIR_NAME,
     private val gson: Gson = Gson()
 )
     : BasicCloudWriter()
@@ -191,7 +195,7 @@ class YandexDiskCloudWriter(
     }
 
     private fun apiURL(vararg queryPairs: Pair<String, String>): HttpUrl {
-        return apiURL(url = YANDEX_API_BASE, queryPairs = queryPairs)
+        return apiURL(url = apiUrlResources, queryPairs = queryPairs)
     }
 
 
@@ -225,7 +229,7 @@ class YandexDiskCloudWriter(
     @Throws(IOException::class, com.github.aakumykov.cloud_writer_3.CloudWriterException::class)
     private suspend fun getURLForUpload(targetFilePath: String, overwriteIfExists: Boolean): String = suspendCancellableCoroutine{ cc ->
 
-        val url = apiURL(UPLOAD_BASE_URL,
+        val url = apiURL(apiUrlUpload,
             PARAM_PATH to targetFilePath,
             PARAM_OVERWRITE to overwriteIfExists.toString()
         )
@@ -311,7 +315,7 @@ class YandexDiskCloudWriter(
         val realFromPath = if (isRelative) virtualRootPlus(fromPath) else fromPath
         val realToPath = if (isRelative) virtualRootPlus(toPath) else toPath
 
-        val url = apiURL(MOVE_BASE_URL,
+        val url = apiURL(apiUrlMove,
             PARAM_FROM to realFromPath,
             PARAM_PATH to realToPath,
             PARAM_OVERWRITE to overwriteIfExists.toString(),
@@ -337,15 +341,19 @@ class YandexDiskCloudWriter(
     }
 
 
-    private val YANDEX_API_BASE get() = "${serverUrl}${YANDEX_API_PATH}"
-    private val UPLOAD_BASE_URL = "${YANDEX_API_BASE}/upload"
-    private val MOVE_BASE_URL = "${YANDEX_API_BASE}/move"
+    val apiPathResources get() = "${apiPathBase}/resources"
+
+    private val apiUrlResources get() = "${apiScheme}://${apiHost}:${apiPort}${apiPathResources}"
+    private val apiUrlUpload get() = "${apiUrlResources}/upload"
+    private val apiUrlMove get() = "${apiUrlResources}/move"
 
 
     companion object {
         val TAG: String = YandexDiskCloudWriter::class.java.simpleName
 
-        const val YANDEX_API_PATH = "/v1/disk/resources"
+        const val API_SCHEME = "https"
+        const val API_HOST = "cloud-api.yandex.net"
+        const val API_PATH_BASE = "/v1/disk"
 
         private const val PARAM_PATH = "path"
         private const val PARAM_FROM = "from"

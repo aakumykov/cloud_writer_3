@@ -18,26 +18,43 @@ abstract class YandexDiskCloudWriterBase {
         get() = OkHttpClient.Builder()
 
 
-    protected lateinit var yandexDiskCloudWriter: YandexDiskCloudWriter
+    protected val mockCloudWriter: YandexDiskCloudWriter by lazy {
 
+        val mockUrl = mockWebServer.url(YandexDiskCloudWriter.API_PATH_BASE)
 
-    @Before
-    fun prepareCloudWriter() {
+        YandexDiskCloudWriter(
+            apiScheme = mockUrl.scheme,
+            apiHost = mockUrl.host,
+            apiPort = mockUrl.port,
+            apiPathBase = mockUrl.encodedPath,
+            authToken = yandexAuthToken,
+            yandexDiskOkhttpClientBuilder = YandexDiskOkhttpClientBuilder(okHttpClientBuilder)
+        )
+    }
 
-        mockWebServer.start()
-
-        mockWebServer.enqueue(MockResponse())
-
-        yandexDiskCloudWriter = YandexDiskCloudWriter(
-            serverUrl = mockWebServer.url(YandexDiskCloudWriter.YANDEX_API_PATH).toString(),
+    protected val realCloudWriter: YandexDiskCloudWriter by lazy {
+        YandexDiskCloudWriter(
             authToken = yandexAuthToken,
             yandexDiskOkhttpClientBuilder = YandexDiskOkhttpClientBuilder(okHttpClientBuilder)
         )
     }
 
 
+    @Before
+    fun prepareCloudWriter() {
+        mockWebServer.apply {
+            start()
+            enqueue(EMPTY_MOCK_RESPONSE)
+        }
+    }
+
+
     @After
     fun stopServer() {
         mockWebServer.close()
+    }
+
+    companion object {
+        private val EMPTY_MOCK_RESPONSE = MockResponse()
     }
 }
