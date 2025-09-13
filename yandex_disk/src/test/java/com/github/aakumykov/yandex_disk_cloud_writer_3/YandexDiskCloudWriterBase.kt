@@ -2,6 +2,7 @@ package com.github.aakumykov.yandex_disk_cloud_writer_3
 
 import com.github.aakumykov.yandex_disk_cloud_writer_3.utils.LocalPropertyReader
 import okhttp3.OkHttpClient
+import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import org.junit.After
 import org.junit.Before
@@ -22,7 +23,10 @@ abstract class YandexDiskCloudWriterBase {
 
     @Before
     fun prepareCloudWriter() {
+
         mockWebServer.start()
+
+        mockWebServer.enqueue(MockResponse())
 
         yandexDiskCloudWriter = YandexDiskCloudWriter(
             serverUrl = mockWebServer.url(YandexDiskCloudWriter.YANDEX_API_PATH).toString(),
@@ -34,7 +38,6 @@ abstract class YandexDiskCloudWriterBase {
 
     @After
     fun stopServer() {
-        // FIXME: почему не shutdown
         mockWebServer.close()
     }
 }
