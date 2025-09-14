@@ -22,7 +22,6 @@ import okhttp3.Response
 import okio.BufferedSink
 import java.io.IOException
 import java.io.InputStream
-import java.net.URL
 import kotlin.coroutines.cancellation.CancellationException
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
@@ -75,9 +74,9 @@ class YandexDiskCloudWriter(
     }
 
 
-    override suspend fun createOneLevelDirIfNotExists(dirPath: String): String {
-        return if (!fileExists(dirPath)) createOneLevelDir(dirPath)
-        else virtualRootPlus(dirPath)
+    override suspend fun createOneLevelDirIfNotExists(dirName: String): String {
+        return if (!fileExists(dirName)) createOneLevelDir(dirName)
+        else virtualRootPlus(dirName)
     }
 
     override suspend fun createOneLevelDirIfNotExists(

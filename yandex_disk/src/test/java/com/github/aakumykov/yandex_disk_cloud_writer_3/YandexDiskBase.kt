@@ -51,7 +51,9 @@ abstract class YandexDiskBase {
         mockWebServer.close()
     }
 
-    companion object {
-        private val EMPTY_MOCK_RESPONSE = MockResponse()
+    protected fun enqueueResponseCodes(vararg code: Int) {
+        code.forEach {
+            mockWebServer.enqueue(MockResponse().setResponseCode(it))
+        }
     }
 }

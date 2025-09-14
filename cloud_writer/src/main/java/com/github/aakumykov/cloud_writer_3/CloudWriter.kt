@@ -95,7 +95,7 @@ interface CloudWriter {
 
 
     @Throws(IOException::class, CloudWriterException::class)
-    suspend fun createOneLevelDirIfNotExists(dirPath: String): String
+    suspend fun createOneLevelDirIfNotExists(dirName: String): String
 
 
     @Throws(IOException::class, CloudWriterException::class)
