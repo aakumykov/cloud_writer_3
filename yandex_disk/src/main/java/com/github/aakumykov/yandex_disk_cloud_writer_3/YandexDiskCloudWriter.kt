@@ -57,7 +57,7 @@ class YandexDiskCloudWriter(
 
         executeCall(call, cc) { response: Response ->
             when(response.code) {
-                201 -> cc.resume(dirName)
+                201 -> cc.resume(absolutePathFor(dirName))
                 else -> throwCloudWriterException(response)
             }
         }
@@ -355,7 +355,7 @@ class YandexDiskCloudWriter(
         const val API_HOST = "cloud-api.yandex.net"
         const val API_PATH_BASE = "/v1/disk"
 
-        private const val PARAM_PATH = "path"
+        const val PARAM_PATH = "path"
         private const val PARAM_FROM = "from"
         private const val PARAM_FORCE_ASYNC = "force_async"
         private const val PARAM_OVERWRITE = "overwrite"
