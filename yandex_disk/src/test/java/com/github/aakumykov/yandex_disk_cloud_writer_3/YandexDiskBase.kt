@@ -7,7 +7,7 @@ import okhttp3.mockwebserver.MockWebServer
 import org.junit.After
 import org.junit.Before
 
-abstract class YandexDiskCloudWriterBase {
+abstract class YandexDiskBase {
 
     protected val mockWebServer: MockWebServer by lazy { MockWebServer() }
 
@@ -42,10 +42,7 @@ abstract class YandexDiskCloudWriterBase {
 
     @Before
     fun prepareCloudWriter() {
-        mockWebServer.apply {
-            start()
-            enqueue(EMPTY_MOCK_RESPONSE)
-        }
+        mockWebServer.start()
     }
 
 

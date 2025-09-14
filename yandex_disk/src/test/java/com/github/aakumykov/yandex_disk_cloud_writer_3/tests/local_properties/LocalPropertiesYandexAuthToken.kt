@@ -1,4 +1,4 @@
-package com.github.aakumykov.yandex_disk_cloud_writer_3.local_properties
+package com.github.aakumykov.yandex_disk_cloud_writer_3.tests.local_properties
 
 import com.github.aakumykov.yandex_disk_cloud_writer_3.YANDEX_SDK_AUTH_TOKEN_KEY
 import com.github.aakumykov.yandex_disk_cloud_writer_3.utils.LocalPropertyReader

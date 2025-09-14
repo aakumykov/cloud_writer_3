@@ -8,7 +8,7 @@ class LocalPropertyReader {
         fun getLocalProperty(key: String): String {
             return ConfigReader(
                 System.getProperty("user.dir"),
-                "..\\local.properties"
+                "../local.properties"
             ).getPropertyValue(key)
         }
 
