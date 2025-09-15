@@ -157,20 +157,20 @@ class YandexDiskCloudWriter(
 
     override suspend fun fileExists(path: String): Boolean = suspendCancellableCoroutine { cc ->
 
-    val url = pathApiURL(path)
+        val url = pathApiURL(path)
 
-    val request = apiRequest(url) {}
+        val request = apiRequest(url) {}
 
-    val call = yandexDiskClient.newCall(request)
+        val call = yandexDiskClient.newCall(request)
 
-    executeCall(call, cc) { response ->
-        when(response.code) {
-            200 -> cc.resume(true)
-            404 -> cc.resume(false)
-            else -> throwCloudWriterException(response)
+        executeCall(call, cc) { response ->
+            when(response.code) {
+                200 -> cc.resume(true)
+                404 -> cc.resume(false)
+                else -> throwCloudWriterException(response)
+            }
         }
     }
-}
 
     override suspend fun fileExists(
         dirPath: String,

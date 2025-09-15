@@ -23,7 +23,7 @@ class YandexDiskCreateOneLevelDir : YandexCreateDirBase() {
     @Test
     fun create_one_level_dir_with_simple_name_request(): Unit = runBlocking {
         val dirName = randomId
-        mockWebServer.enqueue(MockResponse().setResponseCode(201))
+        enqueueResponseCodes(201)
         mockCloudWriter.createOneLevelDir(dirName)
         checkRequest(HTTP_METHOD_PUT, dirName)
     }
@@ -33,7 +33,7 @@ class YandexDiskCreateOneLevelDir : YandexCreateDirBase() {
         val parentName = randomId
         val childName = randomId
         val fullRelativePath = CloudWriter.mergeFilePaths(parentName, childName)
-        mockWebServer.enqueue(MockResponse().setResponseCode(201))
+        enqueueResponseCodes(201)
         mockCloudWriter.createOneLevelDir(parentName, childName)
         checkRequest(HTTP_METHOD_PUT, fullRelativePath)
     }

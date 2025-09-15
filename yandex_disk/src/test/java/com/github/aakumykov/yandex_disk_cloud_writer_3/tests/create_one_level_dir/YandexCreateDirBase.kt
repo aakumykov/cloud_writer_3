@@ -15,6 +15,7 @@ abstract class YandexCreateDirBase : YandexDiskBase() {
     }
 
     protected fun checkRequest(httpMethod: String, dirName: String) {
+
         val recordedRequest = mockWebServer.takeRequest()
 
         Assert.assertEquals(
