@@ -43,45 +43,6 @@ class LocalCloudWriter(
         return createOneLevelDirIfNotExists(CloudWriter.mergeFilePaths(parentPath,childDirName))
     }
 
-
-    /**
-     * @return Абсолютный путь к созданному каталогу.
-     */
-    override suspend fun createDeepDir(deepName: List<String>): String {
-
-        checkDeepNameForBadParts(deepName)
-
-        // Попытка создать "пустой" каталог.
-        if (deepName.isEmpty())
-            return virtualRootPath
-
-        return deepName.reduce { currentPathIntoDeep, nextDirIntoDeep ->
-                // Создаю промежуточные каталоги, если требуется
-                createOneLevelDirIfNotExists(currentPathIntoDeep)
-                CloudWriter.mergeFilePaths(currentPathIntoDeep, nextDirIntoDeep)
-
-        }.let { fullDeepPath ->
-                // Создаю конечный каталог
-                createOneLevelDir(fullDeepPath)
-            }
-    }
-
-
-    override suspend fun createDeepDirIfNotExists(deepName: List<String>): String {
-
-        checkDeepNameForBadParts(deepName)
-
-        val mergedRelativeName = CloudWriter.mergeFilePaths(* deepName.toTypedArray())
-
-        return if (!fileExists(mergedRelativeName)) {
-            createDeepDir(deepName)
-        }
-        else {
-            virtualRootPlus(mergedRelativeName)
-        }
-    }
-
-
     override suspend fun deleteFileOrEmptyDir(dirPath: String, isRelative: Boolean): String {
         return if (isRelative) deleteEmptyDirAbsolute(virtualRootPlus(dirPath))
         else deleteEmptyDirAbsolute(dirPath)
@@ -157,9 +118,9 @@ class LocalCloudWriter(
     }
 
 
-    @Throws(IllegalArgumentException::class)
+    /*@Throws(IllegalArgumentException::class)
     private fun checkDeepNameForBadParts(deepName: List<String>) {
         if (isDeepPathContainsIllegalNames(deepName))
             throw IllegalArgumentException("Argument contains illegal element: $deepName")
-    }
+    }*/
 }

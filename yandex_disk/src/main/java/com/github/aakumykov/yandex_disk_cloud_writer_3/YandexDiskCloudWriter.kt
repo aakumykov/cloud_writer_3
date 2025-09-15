@@ -62,9 +62,6 @@ class YandexDiskCloudWriter(
         }
     }
 
-    override suspend fun createDeepDir(deepName: List<String>): String {
-        throw RuntimeException("createDeepDir(deepName: List<String>)")
-    }
 
     override suspend fun createOneLevelDir(
         parentPath: String,
@@ -105,12 +102,6 @@ class YandexDiskCloudWriter(
         }
     }
 
-
-    override suspend fun createDeepDirIfNotExists(deepName: List<String>): String {
-        val mergedDeepName = CloudWriter.mergeFilePaths(* deepName.toTypedArray())
-        return if (!fileExists(mergedDeepName)) createDeepDir(deepName)
-        else virtualRootPlus(mergedDeepName)
-    }
 
     override suspend fun deleteFileOrEmptyDir(dirPath: String, isRelative: Boolean): String {
         return if (isRelative) deleteEmptyDirAbsolute(virtualRootPlus(dirPath))
@@ -367,5 +358,12 @@ class YandexDiskCloudWriter(
         private val EMPTY_REQUEST_BODY by lazy { "".toRequestBody(null) }
 
         const val AUTH_HEADER_KEY = "Authorization"
+    }
+
+
+    @Throws(IllegalArgumentException::class)
+    private fun checkDeepNameForBadParts(deepName: List<String>) {
+        if (isDeepPathContainsIllegalNames(deepName))
+            throw IllegalArgumentException("Argument contains illegal element: $deepName")
     }
 }

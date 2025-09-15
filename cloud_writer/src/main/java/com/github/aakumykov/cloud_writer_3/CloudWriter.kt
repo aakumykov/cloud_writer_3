@@ -53,6 +53,27 @@ interface CloudWriter {
             .contains(true)
     }
 
+
+    /**
+     *
+     */
+    suspend fun iterateOverDeepDirParts(deepName: List<String>,
+                                        intermediatePathProcessor: suspend (String) -> Unit,
+                                        finalPathProcessor: suspend (String) -> String
+    ): String {
+        return deepName.reduce { currentPathIntoDeep, nextDirIntoDeep ->
+            // Создаю промежуточные каталоги, если требуется
+            intermediatePathProcessor.invoke(currentPathIntoDeep)
+            CloudWriter.mergeFilePaths(currentPathIntoDeep, nextDirIntoDeep)
+        }.let { fullDeepPath ->
+            // Создаю конечный каталог
+            finalPathProcessor.invoke(fullDeepPath)
+        }
+    }
+
+
+
+
     /**
      * Проверяет наличие файла/каталога.
      */
@@ -113,12 +134,41 @@ interface CloudWriter {
      * @throws [IOException], [CloudWriterException]
      */
     @Throws(IOException::class, CloudWriterException::class)
-    suspend fun createDeepDir(deepName: List<String>): String
+    suspend fun createDeepDir(deepName: List<String>): String {
+
+        if (isDeepPathContainsIllegalNames(deepName))
+            throw IllegalArgumentException("Argument contains illegal element: $deepName")
+
+        if (deepName.isEmpty())
+            return virtualRootPath
+
+        return iterateOverDeepDirParts(
+            deepName,
+            { createOneLevelDirIfNotExists(it) },
+            { createOneLevelDir(it) }
+        )
+    }
 
 
     @Throws(IOException::class, CloudWriterException::class)
-    suspend fun createDeepDirIfNotExists(deepName: List<String>): String
+    suspend fun createDeepDirIfNotExists(deepName: List<String>): String {
 
+        // Несмотря на то, что эта функция, по сути, обёртка над [createDeepDir] нельзя оставлять
+        // проверку аргумента только там. Здесь этот аргумент используется в методе [fileExists],
+        // корректная работа которого также критически важна.
+        if (isDeepPathContainsIllegalNames(deepName))
+            throw IllegalArgumentException("Argument contains illegal element: $deepName")
+
+        val mergedRelativeName = mergeFilePaths(* deepName.toTypedArray())
+
+        return if (!fileExists(mergedRelativeName)) createDeepDir(deepName)
+        else virtualRootPlus(mergedRelativeName)
+    }
+
+
+    fun virtualRootPlus(dirName: String): String {
+        return mergeFilePaths(virtualRootPath, dirName)
+    }
 
 
     /**

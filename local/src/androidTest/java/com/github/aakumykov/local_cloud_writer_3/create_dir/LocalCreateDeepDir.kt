@@ -36,6 +36,10 @@ class LocalCreateDeepDir : LocalBase() {
  *   присутствуют корневые или нулевые символы [create_deep_dir_with_empty_or_root_intermediate_name]
  */
 
+    @Test
+    fun create_deep_dir_with_empty_name(): Unit = runBlocking {
+        cloudWriter.createDeepDir(emptyList())
+    }
 
     @Test
     fun create_fully_new_deep_dirs_with_different_levels() = runBlocking {

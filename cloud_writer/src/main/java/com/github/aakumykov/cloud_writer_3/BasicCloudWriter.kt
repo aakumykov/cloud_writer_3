@@ -11,10 +11,6 @@ abstract class BasicCloudWriter : CloudWriter {
 
     override val validFileNameRegex: Regex = Regex("^[^$ZERO_CHAR_STRING]$")
 
-    protected fun virtualRootPlus(dirName: String): String {
-        return CloudWriter.mergeFilePaths(virtualRootPath, dirName)
-    }
-
     /**
      * Проходит путь [path] от корня в грубину, вызывая действие
      * [action] на каждой итерации.
