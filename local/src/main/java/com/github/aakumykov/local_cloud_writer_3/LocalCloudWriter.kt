@@ -16,23 +16,27 @@ class LocalCloudWriter(
 )
     : BasicCloudWriter()
 {
-    override suspend fun createOneLevelDir(dirName: String): String {
+    override suspend fun createOneLevelDir(dirName: String, ignoreAlreadyExists: Boolean): String {
         return with(File(virtualRootPlus(dirName))) {
             val dirAbsolutePath = this.absolutePath
-            if (!mkdir())
-                throw CloudWriterException("Dir '$dirAbsolutePath' was not created")
-            dirAbsolutePath
+            if (this.exists()) {
+                if (ignoreAlreadyExists) dirAbsolutePath
+                else throw CloudWriterException("Dir '$dirAbsolutePath' already exists!")
+            } else {
+                if (mkdir()) dirAbsolutePath
+                else throw CloudWriterException("Dir '$dirAbsolutePath' was not created!")
+            }
         }
     }
 
     override suspend fun createOneLevelDir(parentPath: String, childName: String): String {
-        return createOneLevelDir(CloudWriter.mergeFilePaths(parentPath, childName))
+        return createOneLevelDir(CloudWriter.mergeFilePaths(parentPath, childName),)
     }
 
 
     override suspend fun createOneLevelDirIfNotExists(dirName: String): String {
         return if (!fileExists(dirName)) {
-            createOneLevelDir(dirName)
+            createOneLevelDir(dirName,)
         }
         else {
             absolutePathFor(dirName)

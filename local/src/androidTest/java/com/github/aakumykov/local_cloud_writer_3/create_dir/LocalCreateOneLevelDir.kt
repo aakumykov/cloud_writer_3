@@ -39,7 +39,7 @@ class LocalCreateOneLevelDir : LocalBase() {
         val expectedDirPath = cloudWriter.absolutePathFor(dirName)
         Assert.assertEquals(
             expectedDirPath,
-            cloudWriter.createOneLevelDir(dirName)
+            cloudWriter.createOneLevelDir(dirName,)
         )
     }
 
@@ -51,7 +51,7 @@ class LocalCreateOneLevelDir : LocalBase() {
         val deepDirName = CloudWriter.mergeFilePaths(parentDirName, childDirName)
         Assert.assertThrows(CloudWriterException::class.java) {
             runBlocking {
-                cloudWriter.createOneLevelDir(deepDirName)
+                cloudWriter.createOneLevelDir(deepDirName,)
             }
         }
     }
@@ -65,7 +65,7 @@ class LocalCreateOneLevelDir : LocalBase() {
         val deepDirName = CloudWriter.mergeFilePaths(parentDirName, childDirName)
         val expectedDirPath = cloudWriter.absolutePathFor(deepDirName)
 
-        cloudWriter.createOneLevelDir(parentDirName)
+        cloudWriter.createOneLevelDir(parentDirName,)
 
         Assert.assertEquals(
             expectedDirPath,
@@ -78,7 +78,7 @@ class LocalCreateOneLevelDir : LocalBase() {
     fun virtual_root_dir_throws_exception() {
         Assert.assertThrows(CloudWriterException::class.java) {
             runBlocking {
-                cloudWriter.createOneLevelDir(storageRootPath)
+                cloudWriter.createOneLevelDir(storageRootPath,)
             }
         }
     }
@@ -89,7 +89,7 @@ class LocalCreateOneLevelDir : LocalBase() {
         listOf(ROOT_DIR, EMPTY_DIR_NAME, ILLEGAL_DIR_NAME).forEach { dirName ->
             Assert.assertThrows(CloudWriterException::class.java) {
                 runBlocking {
-                    cloudWriter.createOneLevelDir(dirName)
+                    cloudWriter.createOneLevelDir(dirName,)
                 }
             }
         }

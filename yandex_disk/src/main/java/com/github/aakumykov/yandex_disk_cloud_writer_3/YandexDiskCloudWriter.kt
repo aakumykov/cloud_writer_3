@@ -42,7 +42,7 @@ class YandexDiskCloudWriter(
         yandexDiskOkhttpClientBuilder.create(authToken).build()
     }
 
-    override suspend fun createOneLevelDir(dirName: String): String = suspendCancellableCoroutine { cc ->
+    override suspend fun createOneLevelDir(dirName: String, ignoreAlreadyExists: Boolean): String = suspendCancellableCoroutine { cc ->
 
         val url = apiURL(queryPairs = arrayOf(
             PARAM_PATH to dirName
@@ -57,6 +57,10 @@ class YandexDiskCloudWriter(
         executeCall(call, cc) { response: Response ->
             when(response.code) {
                 201 -> cc.resume(absolutePathFor(dirName))
+                409 -> {
+                    if (ignoreAlreadyExists) cc.resume(absolutePathFor(dirName))
+                    else throwCloudWriterException(response)
+                }
                 else -> throwCloudWriterException(response)
             }
         }
@@ -67,12 +71,12 @@ class YandexDiskCloudWriter(
         parentPath: String,
         childName: String
     ): String {
-        return createOneLevelDir(CloudWriter.mergeFilePaths(parentPath, childName))
+        return createOneLevelDir(CloudWriter.mergeFilePaths(parentPath, childName),)
     }
 
 
     override suspend fun createOneLevelDirIfNotExists(dirName: String): String {
-        return if (!fileExists(dirName)) createOneLevelDir(dirName)
+        return if (!fileExists(dirName)) createOneLevelDir(dirName,)
         else virtualRootPlus(dirName)
     }
 

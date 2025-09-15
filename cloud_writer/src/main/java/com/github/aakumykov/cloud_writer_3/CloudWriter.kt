@@ -62,11 +62,11 @@ interface CloudWriter {
                                         finalPathProcessor: suspend (String) -> String
     ): String {
         return deepName.reduce { currentPathIntoDeep, nextDirIntoDeep ->
-            // Создаю промежуточные каталоги, если требуется
+            // Действия над промежуточными каталогами.
             intermediatePathProcessor.invoke(currentPathIntoDeep)
-            CloudWriter.mergeFilePaths(currentPathIntoDeep, nextDirIntoDeep)
+            mergeFilePaths(currentPathIntoDeep, nextDirIntoDeep)
         }.let { fullDeepPath ->
-            // Создаю конечный каталог
+            // Действие над конечным каталогом.
             finalPathProcessor.invoke(fullDeepPath)
         }
     }
@@ -96,13 +96,15 @@ interface CloudWriter {
      *
      * @param dirName Имя создаваемого каталога. Может быть вложенным ("dir1/dir2",
      * но при условии, что "dir1" уже существует.
+     * @param ignoreAlreadyExists Игнорировать ошибку "уже существует".
+     * Используется в процессе пошагового создания "глубокого" каталога.
      * @return абсолютный путь к созданному каталогу.
      * @throws CloudWriterException если каталог не создан, в том числе по
      * причине того, что он уже существует. Для работы без ошибки в случае
      * наличия каталога, используйте метод [createOneLevelDirIfNotExists].
      */
     @Throws(IOException::class, CloudWriterException::class)
-    suspend fun createOneLevelDir(dirName: String): String
+    suspend fun createOneLevelDir(dirName: String, ignoreAlreadyExists: Boolean = false): String
 
 
     /**
@@ -144,8 +146,8 @@ interface CloudWriter {
 
         return iterateOverDeepDirParts(
             deepName,
-            { createOneLevelDirIfNotExists(it) },
-            { createOneLevelDir(it) }
+            { createOneLevelDir(it, ignoreAlreadyExists = true) },
+            { createOneLevelDir(it,) }
         )
     }
 

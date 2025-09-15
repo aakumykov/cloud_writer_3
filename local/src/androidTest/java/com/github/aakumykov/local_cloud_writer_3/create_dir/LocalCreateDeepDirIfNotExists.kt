@@ -102,7 +102,7 @@ class LocalCreateDeepDirIfNotExists : LocalBase() {
         val name = randomId
         Assert.assertEquals(
             cloudWriter.absolutePathFor(name),
-            cloudWriter.createOneLevelDir(name)
+            cloudWriter.createOneLevelDir(name,)
         )
         Assert.assertEquals(
             cloudWriter.absolutePathFor(name),

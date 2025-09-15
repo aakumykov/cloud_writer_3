@@ -75,10 +75,6 @@ class LocalCreateDeepDir : LocalBase() {
                 val expectedPath = cloudWriter.absolutePathFor(CloudWriter.mergeFilePaths(* deepDirPathNames.toTypedArray()))
                 val createdPath = cloudWriter.createDeepDir(deepDirPathNames)
 
-                /*println("EXPECTED: $expectedPath")
-                println("CREATED: $createdPath")
-                println("-".repeat(10))*/
-
                 Assert.assertEquals(
                     expectedPath,
                     createdPath

@@ -51,7 +51,7 @@ class YandexDiskCreateOneLevelDirIfNotExists : YandexCreateDirBase() {
     fun create_new_dir_with_parent_child_name_result(): Unit = runBlocking {
         val parentName = randomId
         val childName = randomId
-        realCloudWriter.createOneLevelDir(parentName)
+        realCloudWriter.createOneLevelDir(parentName,)
         checkResult(
             CloudWriter.mergeFilePaths(parentName, childName),
             realCloudWriter.createOneLevelDirIfNotExists(parentName, childName)
@@ -65,7 +65,7 @@ class YandexDiskCreateOneLevelDirIfNotExists : YandexCreateDirBase() {
     @Test
     fun create_existing_one_level_dir_with_simple_name_result(): Unit = runBlocking {
         val dirName = randomId
-        realCloudWriter.createOneLevelDir(dirName)
+        realCloudWriter.createOneLevelDir(dirName,)
         checkResult(dirName, realCloudWriter.createOneLevelDirIfNotExists(dirName))
     }
 
@@ -74,7 +74,7 @@ class YandexDiskCreateOneLevelDirIfNotExists : YandexCreateDirBase() {
     fun create_existing_dir_with_parent_child_name_result(): Unit = runBlocking {
         val parentName = randomId
         val childName = randomId
-        realCloudWriter.createOneLevelDir(parentName)
+        realCloudWriter.createOneLevelDir(parentName,)
         checkResult(
             CloudWriter.mergeFilePaths(parentName, childName),
             realCloudWriter.createOneLevelDirIfNotExists(parentName, childName)

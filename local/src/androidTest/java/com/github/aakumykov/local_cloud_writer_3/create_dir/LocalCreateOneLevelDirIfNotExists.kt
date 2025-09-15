@@ -65,7 +65,7 @@ class LocalCreateOneLevelDirIfNotExists : LocalBase() {
     fun create_simple_existing_dir() = runBlocking {
         val dirName = randomId
 
-        cloudWriter.createOneLevelDir(dirName)
+        cloudWriter.createOneLevelDir(dirName,)
 
         Assert.assertEquals(
             cloudWriter.absolutePathFor(dirName),
