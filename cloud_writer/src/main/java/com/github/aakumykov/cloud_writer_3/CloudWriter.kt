@@ -57,11 +57,11 @@ interface CloudWriter {
     /**
      *
      */
-    suspend fun iterateOverDeepDirParts(deepName: List<String>,
+    suspend fun iterateOverDeepDirParts(deepDirName: List<String>,
                                         intermediatePathProcessor: suspend (String) -> Unit,
                                         finalPathProcessor: suspend (String) -> String
     ): String {
-        return deepName.reduce { currentPathIntoDeep, nextDirIntoDeep ->
+        return deepDirName.reduce { currentPathIntoDeep, nextDirIntoDeep ->
             // Действия над промежуточными каталогами.
             intermediatePathProcessor.invoke(currentPathIntoDeep)
             mergeFilePaths(currentPathIntoDeep, nextDirIntoDeep)
@@ -136,16 +136,16 @@ interface CloudWriter {
      * @throws [IOException], [CloudWriterException]
      */
     @Throws(IOException::class, CloudWriterException::class)
-    suspend fun createDeepDir(deepName: List<String>): String {
+    suspend fun createDeepDir(deepDirName: List<String>): String {
 
-        if (isDeepPathContainsIllegalNames(deepName))
-            throw IllegalArgumentException("Argument contains illegal element: $deepName")
+        if (isDeepPathContainsIllegalNames(deepDirName))
+            throw IllegalArgumentException("Argument contains illegal element: $deepDirName")
 
-        if (deepName.isEmpty())
+        if (deepDirName.isEmpty())
             return virtualRootPath
 
         return iterateOverDeepDirParts(
-            deepName,
+            deepDirName,
             { createOneLevelDir(it, ignoreAlreadyExists = true) },
             { createOneLevelDir(it) }
         )
