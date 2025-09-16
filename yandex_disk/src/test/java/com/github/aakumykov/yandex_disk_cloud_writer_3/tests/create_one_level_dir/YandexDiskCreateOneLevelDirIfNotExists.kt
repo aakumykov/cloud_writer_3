@@ -23,7 +23,11 @@ class YandexDiskCreateOneLevelDirIfNotExists : YandexCreateDirBase() {
         // Метод "createOneLevelDirIfNotExists" внутри себя использует GET-метод
         // "fileExists()", и затем, если нужно, PUT-метод "createOneLevelDir()";
         // здесь записанным запросом оказывается первый из них...
-        checkRequest(HTTP_METHOD_GET, YandexDiskCloudWriter.PARAM_PATH to dirName)
+        checkRequest(
+            httpMethod = HTTP_METHOD_GET,
+            requestUrl = realCloudWriter.apiPathResources,
+            YandexDiskCloudWriter.PARAM_PATH to dirName
+        )
     }
 
 
@@ -34,7 +38,11 @@ class YandexDiskCreateOneLevelDirIfNotExists : YandexCreateDirBase() {
         val fullDirName = CloudWriter.mergeFilePaths(parentName, childName)
         enqueueResponseCodes(200, 201)
         mockCloudWriter.createOneLevelDirIfNotExists(parentName, childName)
-        checkRequest(HTTP_METHOD_GET, YandexDiskCloudWriter.PARAM_PATH to fullDirName)
+        checkRequest(
+            httpMethod = HTTP_METHOD_GET,
+            requestUrl = realCloudWriter.apiPathResources,
+            YandexDiskCloudWriter.PARAM_PATH to fullDirName
+        )
     }
 
 

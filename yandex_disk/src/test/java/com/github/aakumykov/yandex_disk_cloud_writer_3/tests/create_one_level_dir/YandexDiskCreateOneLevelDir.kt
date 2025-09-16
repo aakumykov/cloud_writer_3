@@ -22,7 +22,11 @@ class YandexDiskCreateOneLevelDir : YandexCreateDirBase() {
         val dirName = randomId
         enqueueResponseCodes(201)
         mockCloudWriter.createOneLevelDir(dirName,)
-        checkRequest(HTTP_METHOD_PUT, YandexDiskCloudWriter.PARAM_PATH to dirName)
+        checkRequest(
+            httpMethod = HTTP_METHOD_PUT,
+            requestUrl = realCloudWriter.apiPathResources,
+            YandexDiskCloudWriter.PARAM_PATH to dirName
+        )
     }
 
     @Test
@@ -32,7 +36,11 @@ class YandexDiskCreateOneLevelDir : YandexCreateDirBase() {
         val fullRelativePath = CloudWriter.mergeFilePaths(parentName, childName)
         enqueueResponseCodes(201)
         mockCloudWriter.createOneLevelDir(parentName, childName)
-        checkRequest(HTTP_METHOD_PUT, YandexDiskCloudWriter.PARAM_PATH to fullRelativePath)
+        checkRequest(
+            httpMethod = HTTP_METHOD_PUT,
+            requestUrl = realCloudWriter.apiPathResources,
+            YandexDiskCloudWriter.PARAM_PATH to fullRelativePath
+        )
     }
 
 

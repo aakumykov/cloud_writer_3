@@ -26,7 +26,11 @@ class YandexDiskCreateDeepDir : YandexCreateDirBase() {
 
         mockCloudWriter.createDeepDir(listOf(dirName))
 
-        checkRequest(HTTP_METHOD_PUT, YandexDiskCloudWriter.PARAM_PATH to dirName)
+        checkRequest(
+            HTTP_METHOD_PUT,
+            realCloudWriter.apiPathResources,
+            YandexDiskCloudWriter.PARAM_PATH to dirName
+        )
     }
 
 
@@ -46,11 +50,17 @@ class YandexDiskCreateDeepDir : YandexCreateDirBase() {
             }
 
             checkRequest(
-                mockWebServer.takeNthRequest(n),
-                HTTP_METHOD_PUT,
+                recordedRequest = mockWebServer.takeNthRequest(n),
+                httpMethod = HTTP_METHOD_PUT,
+                requestUrl = realCloudWriter.apiPathResources,
                 YandexDiskCloudWriter.PARAM_PATH to deepDirSolidName
             )
 
         }
     }
+
+
+    //
+    // Проверка результатов вызова
+    //
 }

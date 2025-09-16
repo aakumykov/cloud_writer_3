@@ -16,7 +16,12 @@ abstract class YandexCreateDirBase : YandexDiskBase() {
     }
 
 
-    protected fun checkRequest(recordedRequest: RecordedRequest, httpMethod: String, vararg queryParameters: Pair<String,String>) {
+    protected fun checkRequest(
+        recordedRequest: RecordedRequest,
+        httpMethod: String,
+        requestUrl: String,
+        vararg queryParameters: Pair<String,String>
+    ) {
 
         Assert.assertEquals(
             httpMethod,
@@ -24,7 +29,7 @@ abstract class YandexCreateDirBase : YandexDiskBase() {
         )
 
         Assert.assertEquals(
-            realCloudWriter.apiPathResources,
+            requestUrl,
             recordedRequest.requestUrl?.encodedPath
         )
 
@@ -37,10 +42,15 @@ abstract class YandexCreateDirBase : YandexDiskBase() {
     }
 
 
-    protected fun checkRequest(httpMethod: String, vararg queryParameters: Pair<String,String>) {
+    protected fun checkRequest(
+        httpMethod: String,
+        requestUrl: String,
+        vararg queryParameters: Pair<String,String>
+    ) {
         checkRequest(
-            mockWebServer.takeRequest(),
-            httpMethod,
+            recordedRequest = mockWebServer.takeRequest(),
+            httpMethod = httpMethod,
+            requestUrl = requestUrl,
             * queryParameters
         )
     }
