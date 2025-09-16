@@ -22,6 +22,7 @@ class LocalCreateOneLevelDir : LocalBase() {
      * это означает создание нового экземпляра [CloudWriter].
      *
      * - простой каталог создаётся [simple_dir_is_created]
+     * - проверка действия аргумента "игнорировать, если существует" [ignore_already_exists_argument]
      *
      * - вложенный каталог не создаётся, так как дерево не создать одним вызовом [deep_dir_is_not_created]
      * - вложенный каталог создаётся поэтапно вглубь [deep_dir_is_created_step_by_step_in_deep]
@@ -41,6 +42,24 @@ class LocalCreateOneLevelDir : LocalBase() {
             expectedDirPath,
             cloudWriter.createOneLevelDir(dirName,)
         )
+    }
+
+    @Test
+    fun ignore_already_exists_argument(): Unit = runBlocking {
+        val dirName = randomId
+        cloudWriter.createOneLevelDir(dirName)
+
+        val expectedDirPath = cloudWriter.absolutePathFor(dirName)
+        Assert.assertEquals(
+            expectedDirPath,
+            cloudWriter.createOneLevelDir(dirName, true)
+        )
+
+        Assert.assertThrows(CloudWriterException::class.java) {
+            runBlocking {
+                cloudWriter.createOneLevelDir(dirName, false)
+            }
+        }
     }
 
 
