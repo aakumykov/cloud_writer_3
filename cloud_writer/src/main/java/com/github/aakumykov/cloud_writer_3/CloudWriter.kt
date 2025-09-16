@@ -68,7 +68,7 @@ interface CloudWriter {
         }.let { fullDeepPath ->
             // Действие над конечным каталогом.
             finalPathProcessor.invoke(fullDeepPath)
-        }
+        }.let { it }
     }
 
 

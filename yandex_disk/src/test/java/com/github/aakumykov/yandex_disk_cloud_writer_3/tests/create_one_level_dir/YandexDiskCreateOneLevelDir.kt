@@ -4,6 +4,7 @@ import com.github.aakumykov.cloud_writer_3.CloudWriter
 import com.github.aakumykov.cloud_writer_3.CloudWriterException
 import com.github.aakumykov.yandex_disk_cloud_writer_3.HTTP_METHOD_PUT
 import com.github.aakumykov.yandex_disk_cloud_writer_3.ROOT_PATH
+import com.github.aakumykov.yandex_disk_cloud_writer_3.YandexDiskCloudWriter
 import com.github.aakumykov.yandex_disk_cloud_writer_3.utils.randomId
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
@@ -21,7 +22,7 @@ class YandexDiskCreateOneLevelDir : YandexCreateDirBase() {
         val dirName = randomId
         enqueueResponseCodes(201)
         mockCloudWriter.createOneLevelDir(dirName,)
-        checkRequest(HTTP_METHOD_PUT, dirName)
+        checkRequest(HTTP_METHOD_PUT, YandexDiskCloudWriter.PARAM_PATH to dirName)
     }
 
     @Test
@@ -31,7 +32,7 @@ class YandexDiskCreateOneLevelDir : YandexCreateDirBase() {
         val fullRelativePath = CloudWriter.mergeFilePaths(parentName, childName)
         enqueueResponseCodes(201)
         mockCloudWriter.createOneLevelDir(parentName, childName)
-        checkRequest(HTTP_METHOD_PUT, fullRelativePath)
+        checkRequest(HTTP_METHOD_PUT, YandexDiskCloudWriter.PARAM_PATH to fullRelativePath)
     }
 
 

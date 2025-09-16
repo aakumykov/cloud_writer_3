@@ -2,6 +2,7 @@ package com.github.aakumykov.yandex_disk_cloud_writer_3.tests.create_one_level_d
 
 import com.github.aakumykov.yandex_disk_cloud_writer_3.HTTP_METHOD_GET
 import com.github.aakumykov.yandex_disk_cloud_writer_3.HTTP_METHOD_PUT
+import com.github.aakumykov.yandex_disk_cloud_writer_3.YandexDiskCloudWriter
 import com.github.aakumykov.yandex_disk_cloud_writer_3.utils.randomId
 import kotlinx.coroutines.runBlocking
 import okhttp3.mockwebserver.MockWebServer
@@ -24,7 +25,7 @@ class YandexDiskCreateDeepDir : YandexCreateDirBase() {
 
         mockCloudWriter.createDeepDir(listOf(dirName))
 
-        checkRequest(HTTP_METHOD_PUT, dirName)
+        checkRequest(HTTP_METHOD_PUT, YandexDiskCloudWriter.PARAM_PATH to dirName)
     }
 
 
@@ -50,22 +51,25 @@ class YandexDiskCreateDeepDir : YandexCreateDirBase() {
             enqueueResponseCodes(201)
         } }
 
+        val deepDirPath = realCloudWriter.absolutePathFor(dirNames)
+
         runBlocking {
             mockCloudWriter.createDeepDir(dirNames)
             checkRequest(
-                mockWebServer.takeNthRequest(n)
+                mockWebServer.takeRequest(),
                 HTTP_METHOD_PUT,
-                realCloudWriter.absolutePathFor(dirNames)
+                YandexDiskCloudWriter.PARAM_PATH to deepDirPath
             )
         }
     }
 }
 
+
 @Throws(NoSuchElementException::class)
 fun MockWebServer.takeNthRequest(n: Int): RecordedRequest {
-    repeat(n) { i ->
-        val req = takeRequest()
-        if (i == n-1)
-            return req
+    var req: RecordedRequest? = null
+    for (i in 0..n) {
+        req = takeRequest()
     }
+    return req!!
 }

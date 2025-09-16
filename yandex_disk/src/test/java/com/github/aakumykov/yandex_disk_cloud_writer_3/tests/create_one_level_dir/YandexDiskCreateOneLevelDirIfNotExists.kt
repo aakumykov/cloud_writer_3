@@ -2,6 +2,7 @@ package com.github.aakumykov.yandex_disk_cloud_writer_3.tests.create_one_level_d
 
 import com.github.aakumykov.cloud_writer_3.CloudWriter
 import com.github.aakumykov.yandex_disk_cloud_writer_3.HTTP_METHOD_GET
+import com.github.aakumykov.yandex_disk_cloud_writer_3.YandexDiskCloudWriter
 import com.github.aakumykov.yandex_disk_cloud_writer_3.utils.randomId
 import kotlinx.coroutines.runBlocking
 import org.junit.Test
@@ -22,7 +23,7 @@ class YandexDiskCreateOneLevelDirIfNotExists : YandexCreateDirBase() {
         // Метод "createOneLevelDirIfNotExists" внутри себя использует GET-метод
         // "fileExists()", и затем, если нужно, PUT-метод "createOneLevelDir()";
         // здесь записанным запросом оказывается первый из них...
-        checkRequest(HTTP_METHOD_GET, dirName)
+        checkRequest(HTTP_METHOD_GET, YandexDiskCloudWriter.PARAM_PATH to dirName)
     }
 
 
@@ -33,7 +34,7 @@ class YandexDiskCreateOneLevelDirIfNotExists : YandexCreateDirBase() {
         val fullDirName = CloudWriter.mergeFilePaths(parentName, childName)
         enqueueResponseCodes(200, 201)
         mockCloudWriter.createOneLevelDirIfNotExists(parentName, childName)
-        checkRequest(HTTP_METHOD_GET, fullDirName)
+        checkRequest(HTTP_METHOD_GET, YandexDiskCloudWriter.PARAM_PATH to fullDirName)
     }
 
 
