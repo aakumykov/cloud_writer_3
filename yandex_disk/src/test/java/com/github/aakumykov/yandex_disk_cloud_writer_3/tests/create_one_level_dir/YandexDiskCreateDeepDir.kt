@@ -18,26 +18,9 @@ class YandexDiskCreateDeepDir : YandexCreateDirBase() {
     // Проверка запросов
     //
     @Test
-    fun create_one_level_deep_dir(): Unit = runBlocking {
-
-        val dirName = randomId
-
-        enqueueResponseCodes(201)
-
-        mockCloudWriter.createDeepDir(listOf(dirName))
-
-        checkRequest(
-            HTTP_METHOD_PUT,
-            realCloudWriter.apiPathResources,
-            YandexDiskCloudWriter.PARAM_PATH to dirName
-        )
-    }
-
-
-    @Test
     fun create_multi_level_deep_dir() {
         repeat(maxDeepDirLevel) { i ->
-            val n = i+2
+            val n = i+1
 
             val dirNames: List<String> = nameForDeepDir(n)
 
@@ -63,4 +46,8 @@ class YandexDiskCreateDeepDir : YandexCreateDirBase() {
     //
     // Проверка результатов вызова
     //
+    @Test
+    fun create_one_level_deep_dir_result() {
+
+    }
 }
