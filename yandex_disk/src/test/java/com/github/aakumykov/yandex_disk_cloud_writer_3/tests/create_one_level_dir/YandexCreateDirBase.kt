@@ -45,5 +45,5 @@ abstract class YandexCreateDirBase : YandexDiskBase() {
         )
     }
 
-    protected fun nameForDeepDir(depth: Int): List<String> = buildList { add(randomId) }
+    protected fun nameForDeepDir(depth: Int): List<String> = buildList { repeat(depth) { add(randomId) } }
 }
