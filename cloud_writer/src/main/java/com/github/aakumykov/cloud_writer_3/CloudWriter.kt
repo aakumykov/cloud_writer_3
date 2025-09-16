@@ -147,7 +147,7 @@ interface CloudWriter {
         return iterateOverDeepDirParts(
             deepName,
             { createOneLevelDir(it, ignoreAlreadyExists = true) },
-            { createOneLevelDir(it,) }
+            { createOneLevelDir(it) }
         )
     }
 
