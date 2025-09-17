@@ -229,7 +229,8 @@ interface CloudWriter {
         const val ROOT_DIR_NAME = DS
         val ZERO_CHAR_STRING = String(charArrayOf(Char(0)))
 
-        fun mergeFilePaths(vararg paths: String): String
-            = paths.joinToString(DS).stripMultiSlashes()
+        fun mergeFilePaths(vararg paths: String): String = paths.joinToString(DS).stripMultiSlashes()
+
+        fun mergeFilePaths(paths: List<String>): String = mergeFilePaths(* paths.toTypedArray())
     }
 }
