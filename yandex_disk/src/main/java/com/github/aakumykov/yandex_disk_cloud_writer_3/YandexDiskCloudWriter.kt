@@ -48,9 +48,7 @@ class YandexDiskCloudWriter(
             PARAM_PATH to dirName
         ))
 
-        val request = apiRequest(url) {
-            put(EMPTY_REQUEST_BODY)
-        }
+        val request = apiRequest(url) { put(EMPTY_REQUEST_BODY) }
 
         val call = yandexDiskClient.newCall(request)
 
@@ -119,9 +117,7 @@ class YandexDiskCloudWriter(
             PARAM_PERMANENTLY to VALUE_TRUE
         )
 
-        val request = apiRequest(url) {
-            delete()
-        }
+        val request = apiRequest(url) { delete() }
 
         val call = yandexDiskClient.newCall(request)
 
@@ -316,9 +312,7 @@ class YandexDiskCloudWriter(
             PARAM_FORCE_ASYNC to VALUE_FALSE
         )
 
-        val request = apiRequest(url) {
-            post(EMPTY_REQUEST_BODY)
-        }
+        val request = apiRequest(url) { post(EMPTY_REQUEST_BODY) }
 
         val call = yandexDiskClient.newCall(request)
 

@@ -163,8 +163,12 @@ interface CloudWriter {
 
         val mergedRelativeName = mergeFilePaths(* deepName.toTypedArray())
 
-        return if (!fileExists(mergedRelativeName)) createDeepDir(deepName)
-        else virtualRootPlus(mergedRelativeName)
+        return if (!fileExists(mergedRelativeName)) {
+            createDeepDir(deepName)
+        }
+        else {
+            virtualRootPlus(mergedRelativeName)
+        }
     }
 
 
