@@ -218,7 +218,6 @@ interface CloudWriter {
     suspend fun renameFileOrEmptyDir(
         fromPath: String,
         toPath: String,
-        isRelative: Boolean,
         overwriteIfExists: Boolean = true
     ): Boolean
 

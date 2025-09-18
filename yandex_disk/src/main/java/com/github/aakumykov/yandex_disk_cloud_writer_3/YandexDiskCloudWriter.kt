@@ -301,12 +301,11 @@ class YandexDiskCloudWriter(
     override suspend fun renameFileOrEmptyDir(
         fromPath: String,
         toPath: String,
-        isRelative: Boolean,
         overwriteIfExists: Boolean
     ): Boolean = suspendCancellableCoroutine { cc ->
 
-        val realFromPath = if (isRelative) virtualRootPlus(fromPath) else fromPath
-        val realToPath = if (isRelative) virtualRootPlus(toPath) else toPath
+        val realFromPath = virtualRootPlus(fromPath)
+        val realToPath = virtualRootPlus(toPath)
 
         val url = apiURL(apiUrlMove,
             PARAM_FROM to realFromPath,
@@ -333,6 +332,7 @@ class YandexDiskCloudWriter(
 
 
     val apiPathResources get() = "${apiPathBase}/resources"
+    val apiPathMove get() = "${apiPathResources}/move"
 
     private val apiUrlResources get() = "${apiScheme}://${apiHost}:${apiPort}${apiPathResources}"
     private val apiUrlUpload get() = "${apiUrlResources}/upload"
@@ -347,7 +347,7 @@ class YandexDiskCloudWriter(
         const val API_PATH_BASE = "/v1/disk"
 
         const val PARAM_PATH = "path"
-        private const val PARAM_FROM = "from"
+        const val PARAM_FROM = "from"
         private const val PARAM_FORCE_ASYNC = "force_async"
         private const val PARAM_OVERWRITE = "overwrite"
         private const val PARAM_PERMANENTLY = "permanently"
