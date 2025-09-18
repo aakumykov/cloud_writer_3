@@ -16,23 +16,32 @@ class YandexDiskCreateDeepDirIfNotExists : YandexCreateDirBase() {
     //
     @Test
     fun create_multi_level_deep_dir_if_not_exists() {
+
         repeat(maxDeepDirLevel) { i ->
+
             val depth = i+1
             val dirName = nameForDeepDir(depth)
             val dirSolidName = CloudWriter.mergeFilePaths(dirName)
-            repeat(depth) {
-                enqueueResponseCodes(404)
-                enqueueResponseCodes(201)
-            }
+
+            enqueueResponseCodes(404) // Первая проверка существования глубокого каталога.
+            enqueueResponseCodes(201) // Создание последнего каталога в цепочке.
+
+            // Последующие создания промежуточных каталогов без проверки.
+            repeat(depth) { enqueueResponseCodes(404) }
+
             runBlocking {
                 mockCloudWriter.createDeepDirIfNotExists(dirName)
             }
+
             checkRequest(
-                recordedRequest = mockWebServer.takeNthRequest(depth),
+                recordedRequest = mockWebServer.takeNthRequest(depth+1),
                 httpMethod = HTTP_METHOD_PUT,
                 requestUrl = realCloudWriter.apiPathResources,
                 YandexDiskCloudWriter.PARAM_PATH to dirSolidName
             )
         }
     }
+
+
+
 }
