@@ -47,7 +47,7 @@ class LocalCloudWriter(
         return createOneLevelDirIfNotExists(CloudWriter.mergeFilePaths(parentPath,childDirName))
     }
 
-    override suspend fun deleteFileOrEmptyDir(dirPath: String, isRelative: Boolean): String {
+    override suspend fun deleteFileOrEmptyDir(dirPath: String): String {
         return if (isRelative) deleteEmptyDirAbsolute(virtualRootPlus(dirPath))
         else deleteEmptyDirAbsolute(dirPath)
     }

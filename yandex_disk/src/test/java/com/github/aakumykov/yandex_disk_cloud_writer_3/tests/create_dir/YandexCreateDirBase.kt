@@ -7,52 +7,5 @@ import org.junit.Assert
 
 abstract class YandexCreateDirBase : YandexDiskBase() {
 
-    protected fun checkResult(requestedDirPath: String, resultingDirPath: String) {
-        Assert.assertEquals(
-            realCloudWriter.absolutePathFor(requestedDirPath),
-            resultingDirPath
-        )
-    }
-
-
-    protected fun checkRequest(
-        recordedRequest: RecordedRequest,
-        httpMethod: String,
-        requestUrl: String,
-        vararg queryParameters: Pair<String,String>
-    ) {
-
-        Assert.assertEquals(
-            httpMethod,
-            recordedRequest.method
-        )
-
-        Assert.assertEquals(
-            requestUrl,
-            recordedRequest.requestUrl?.encodedPath
-        )
-
-        queryParameters.forEach { pair ->
-            Assert.assertEquals(
-                pair.second,
-                recordedRequest.requestUrl?.queryParameter(pair.first)
-            )
-        }
-    }
-
-
-    protected fun checkRequest(
-        httpMethod: String,
-        requestUrl: String,
-        vararg queryParameters: Pair<String,String>
-    ) {
-        checkRequest(
-            recordedRequest = mockWebServer.takeRequest(),
-            httpMethod = httpMethod,
-            requestUrl = requestUrl,
-            * queryParameters
-        )
-    }
-
     protected fun nameForDeepDir(depth: Int): List<String> = buildList { repeat(depth) { add(randomId) } }
 }

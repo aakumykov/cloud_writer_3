@@ -51,7 +51,7 @@ class YandexDiskCreateDeepDirIfNotExists : YandexCreateDirBase() {
 
 
     //
-    // Проверка результата
+    // Проверка возвращаемого значения
     //
     @Test
     fun create_deep_dir_if_not_exists_when_it_partially_exists() {

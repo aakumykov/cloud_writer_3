@@ -109,12 +109,9 @@ class YandexDiskCloudWriter(
     }
 
 
-    override suspend fun deleteFileOrEmptyDir(dirPath: String, isRelative: Boolean): String {
-        return if (isRelative) deleteEmptyDirAbsolute(virtualRootPlus(dirPath))
-        else deleteEmptyDirAbsolute(dirPath)
-    }
+    override suspend fun deleteFileOrEmptyDir(dirPath: String): String = suspendCancellableCoroutine{ cc ->
 
-    private suspend fun deleteEmptyDirAbsolute(absolutePath: String): String = suspendCancellableCoroutine{ cc ->
+        val absolutePath = virtualRootPlus(dirPath)
 
         val url = apiURL(
             PARAM_PATH to absolutePath,

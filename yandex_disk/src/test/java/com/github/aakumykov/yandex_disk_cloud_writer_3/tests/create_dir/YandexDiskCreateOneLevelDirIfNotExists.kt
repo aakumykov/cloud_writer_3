@@ -47,12 +47,12 @@ class YandexDiskCreateOneLevelDirIfNotExists : YandexCreateDirBase() {
 
 
     //
-    // Проверка результата создания новых (ещё не существующих) каталогов.
+    // Проверка возвращаемого значения при создании новых (ещё не существующих) каталогов.
     //
     @Test
     fun create_new_dir_with_simple_name_result(): Unit = runBlocking {
         val dirName = randomId
-        checkResult(dirName, realCloudWriter.createOneLevelDirIfNotExists(dirName))
+        checkReturnedValue(dirName, realCloudWriter.createOneLevelDirIfNotExists(dirName))
     }
 
 
@@ -61,7 +61,7 @@ class YandexDiskCreateOneLevelDirIfNotExists : YandexCreateDirBase() {
         val parentName = randomId
         val childName = randomId
         realCloudWriter.createOneLevelDir(parentName,)
-        checkResult(
+        checkReturnedValue(
             CloudWriter.mergeFilePaths(parentName, childName),
             realCloudWriter.createOneLevelDirIfNotExists(parentName, childName)
         )
@@ -69,13 +69,13 @@ class YandexDiskCreateOneLevelDirIfNotExists : YandexCreateDirBase() {
 
 
     //
-    // Проверка результата "создания" уже существующих каталогов.
+    // Проверка возвращаемого значения "создания" уже существующих каталогов.
     //
     @Test
     fun create_existing_one_level_dir_with_simple_name_result(): Unit = runBlocking {
         val dirName = randomId
         realCloudWriter.createOneLevelDir(dirName,)
-        checkResult(dirName, realCloudWriter.createOneLevelDirIfNotExists(dirName))
+        checkReturnedValue(dirName, realCloudWriter.createOneLevelDirIfNotExists(dirName))
     }
 
 
@@ -84,7 +84,7 @@ class YandexDiskCreateOneLevelDirIfNotExists : YandexCreateDirBase() {
         val parentName = randomId
         val childName = randomId
         realCloudWriter.createOneLevelDir(parentName,)
-        checkResult(
+        checkReturnedValue(
             CloudWriter.mergeFilePaths(parentName, childName),
             realCloudWriter.createOneLevelDirIfNotExists(parentName, childName)
         )

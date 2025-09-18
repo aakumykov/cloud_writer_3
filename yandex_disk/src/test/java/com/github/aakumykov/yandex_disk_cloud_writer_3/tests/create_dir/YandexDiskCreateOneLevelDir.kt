@@ -45,12 +45,12 @@ class YandexDiskCreateOneLevelDir : YandexCreateDirBase() {
 
 
     //
-    // Проверка возвращаемого результата
+    // Проверка возвращаемого значения
     //
     @Test
     fun create_one_level_dir_with_simple_name_result(): Unit = runBlocking {
         val dirName = randomId
-        checkResult(dirName, realCloudWriter.createOneLevelDir(dirName,))
+        checkReturnedValue(dirName, realCloudWriter.createOneLevelDir(dirName,))
     }
 
     @Test
@@ -59,7 +59,7 @@ class YandexDiskCreateOneLevelDir : YandexCreateDirBase() {
         val childName = randomId
         val fullRelativePath = CloudWriter.mergeFilePaths(parentName, childName)
         realCloudWriter.createOneLevelDir(parentName,)
-        checkResult(fullRelativePath, realCloudWriter.createOneLevelDir(parentName, childName))
+        checkReturnedValue(fullRelativePath, realCloudWriter.createOneLevelDir(parentName, childName))
     }
 
 

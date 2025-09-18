@@ -44,7 +44,7 @@ class YandexDiskCreateDeepDir : YandexCreateDirBase() {
 
 
     //
-    // Проверка результатов вызова
+    // Проверка возвращаемого значения
     //
     @Test
     fun create_one_level_deep_dir_result() {

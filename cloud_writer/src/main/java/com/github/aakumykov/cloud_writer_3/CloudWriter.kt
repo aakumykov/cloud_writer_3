@@ -187,7 +187,7 @@ interface CloudWriter {
      *   без сигнала о завершении.
      * @return Абсолютный путь к удалённому каталогу.
      */
-    suspend fun deleteFileOrEmptyDir(dirPath: String, isRelative: Boolean): String
+    suspend fun deleteFileOrEmptyDir(dirPath: String): String
 
 
     /**
