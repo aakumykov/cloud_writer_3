@@ -5,7 +5,9 @@ import com.github.aakumykov.yandex_disk_cloud_writer_3.HTTP_METHOD_PUT
 import com.github.aakumykov.yandex_disk_cloud_writer_3.YandexDiskCloudWriter
 import com.github.aakumykov.yandex_disk_cloud_writer_3.utils.takeNthRequest
 import kotlinx.coroutines.runBlocking
+import org.junit.Assert
 import org.junit.Test
+import kotlin.random.Random
 
 class YandexDiskCreateDeepDirIfNotExists : YandexCreateDirBase() {
 
@@ -15,7 +17,7 @@ class YandexDiskCreateDeepDirIfNotExists : YandexCreateDirBase() {
     // Проверка запросов
     //
     @Test
-    fun create_multi_level_deep_dir_if_not_exists_when_dir_fully_not_exists() {
+    fun create_deep_dir_if_not_exists_when_it_fully_not_exists() {
 
         repeat(maxDeepDirLevel) { i ->
 
@@ -48,19 +50,37 @@ class YandexDiskCreateDeepDirIfNotExists : YandexCreateDirBase() {
     }
 
 
-    @Test
-    fun create_multi_level_deep_dir_if_not_exists_when_dir_partially_exists() {
-        repeat(maxDeepDirLevel) { i ->
-            val depth = i+1
-
-        }
-    }
-
     //
     // Проверка результата
     //
-    /*@Test
-    fun create_multi_level_deep_dir_if_not_exists_result() {
+    @Test
+    fun create_deep_dir_if_not_exists_when_it_partially_exists() {
 
-    }*/
+        repeat(3) { i ->
+            val depth = i+2
+
+            val deepDirName = nameForDeepDir(depth)
+            val partialDeepDirName = deepDirName.toMutableList().apply {
+                repeat(Random.nextInt(1,depth)) {
+                    removeLast()
+                }
+            }
+
+            println("---------------------------------------")
+            println("deepDirName       : ${deepDirName.joinToString(" / ")}")
+            println("partialDeepDirName: ${partialDeepDirName.joinToString(" / ")}")
+
+            runBlocking {
+                Assert.assertEquals(
+                    realCloudWriter.absolutePathFor(partialDeepDirName),
+                    realCloudWriter.createDeepDir(partialDeepDirName)
+                )
+
+                Assert.assertEquals(
+                    realCloudWriter.absolutePathFor(deepDirName),
+                    realCloudWriter.createDeepDirIfNotExists(deepDirName)
+                )
+            }
+        }
+    }
 }
