@@ -5,5 +5,5 @@ import okhttp3.Response
 
 val Response.toCloudWriterException: CloudWriterException
     get() {
-    return CloudWriterException("${code}: $message")
-}
+        return CloudWriterException("${code}: $message [request URL: ${request.url}]")
+    }

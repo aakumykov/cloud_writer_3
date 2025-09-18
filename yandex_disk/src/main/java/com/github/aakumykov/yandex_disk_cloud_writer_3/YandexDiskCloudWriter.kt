@@ -55,7 +55,7 @@ class YandexDiskCloudWriter(
         executeCall(call, cc) { response: Response ->
             when(response.code) {
                 201 -> cc.resume(absolutePathFor(dirName))
-                409 -> {
+                404 -> {
                     if (ignoreAlreadyExists) cc.resume(absolutePathFor(dirName))
                     else throwCloudWriterException(response)
                 }
@@ -127,7 +127,7 @@ class YandexDiskCloudWriter(
                     cc.resume(absolutePath)
                 }
                 else -> {
-                    throw response.toCloudWriterException
+                    throwCloudWriterException(response)
                 }
             }
         }
