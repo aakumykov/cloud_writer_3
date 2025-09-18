@@ -15,7 +15,7 @@ class YandexDiskCreateDeepDirIfNotExists : YandexCreateDirBase() {
     // Проверка запросов
     //
     @Test
-    fun create_multi_level_deep_dir_if_not_exists() {
+    fun create_multi_level_deep_dir_if_not_exists_when_dir_fully_not_exists() {
 
         repeat(maxDeepDirLevel) { i ->
 
@@ -43,5 +43,19 @@ class YandexDiskCreateDeepDirIfNotExists : YandexCreateDirBase() {
     }
 
 
+    @Test
+    fun create_multi_level_deep_dir_if_not_exists_when_dir_partially_exists() {
+        repeat(maxDeepDirLevel) { i ->
+            val depth = i+1
 
+        }
+    }
+
+    //
+    // Проверка результата
+    //
+    /*@Test
+    fun create_multi_level_deep_dir_if_not_exists_result() {
+
+    }*/
 }
