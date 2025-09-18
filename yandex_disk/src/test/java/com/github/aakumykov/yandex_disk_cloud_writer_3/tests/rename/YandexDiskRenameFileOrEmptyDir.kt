@@ -2,7 +2,6 @@ package com.github.aakumykov.yandex_disk_cloud_writer_3.tests.rename
 
 import com.github.aakumykov.cloud_writer_3.CloudWriterException
 import com.github.aakumykov.yandex_disk_cloud_writer_3.HTTP_METHOD_POST
-import com.github.aakumykov.yandex_disk_cloud_writer_3.HTTP_METHOD_PUT
 import com.github.aakumykov.yandex_disk_cloud_writer_3.YandexDiskBase
 import com.github.aakumykov.yandex_disk_cloud_writer_3.YandexDiskCloudWriter
 import com.github.aakumykov.yandex_disk_cloud_writer_3.utils.randomId
@@ -10,7 +9,7 @@ import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Test
 
-class RenameFileOrEmptyDir : YandexDiskBase() {
+class YandexDiskRenameFileOrEmptyDir : YandexDiskBase() {
 
     //
     // Проверка запросов

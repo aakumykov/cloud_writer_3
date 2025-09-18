@@ -2,15 +2,13 @@ package com.github.aakumykov.yandex_disk_cloud_writer_3.tests.delete
 
 import com.github.aakumykov.cloud_writer_3.CloudWriterException
 import com.github.aakumykov.yandex_disk_cloud_writer_3.HTTP_METHOD_DELETE
-import com.github.aakumykov.yandex_disk_cloud_writer_3.HTTP_METHOD_PUT
 import com.github.aakumykov.yandex_disk_cloud_writer_3.YandexDiskBase
-import com.github.aakumykov.yandex_disk_cloud_writer_3.YandexDiskCloudWriter
 import com.github.aakumykov.yandex_disk_cloud_writer_3.utils.randomId
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Test
 
-class DeleteFileOrEmptyDir : YandexDiskBase() {
+class YandexDiskDeleteFileOrEmptyDir : YandexDiskBase() {
 
     //
     // Проверка возвращаемого значения

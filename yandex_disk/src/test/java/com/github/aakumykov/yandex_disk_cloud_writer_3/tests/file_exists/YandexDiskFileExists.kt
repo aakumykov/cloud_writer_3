@@ -9,7 +9,7 @@ import okhttp3.mockwebserver.RecordedRequest
 import org.junit.Assert
 import org.junit.Test
 
-class FileExists : YandexDiskBase() {
+class YandexDiskFileExists : YandexDiskBase() {
 
     @Test
     fun root_dir_exists_request(): Unit = runBlocking {
