@@ -1,5 +1,7 @@
 package com.github.aakumykov.yandex_disk_cloud_writer_3
 
+import android.util.Log
+import com.github.aakumykov.yandex_disk_cloud_writer_3.YandexDiskCloudWriter.Companion
 import com.github.aakumykov.yandex_disk_cloud_writer_3.utils.LocalPropertyReader
 import okhttp3.OkHttpClient
 import okhttp3.mockwebserver.MockResponse
@@ -52,8 +54,13 @@ abstract class YandexDiskBase {
     }
 
     protected fun enqueueResponseCodes(vararg code: Int) {
+        println("${TAG}: enqueueResponseCodes(${code.joinToString(",")})")
         code.forEach {
             mockWebServer.enqueue(MockResponse().setResponseCode(it))
         }
+    }
+
+    companion object {
+        val TAG = YandexDiskBase::class.simpleName
     }
 }

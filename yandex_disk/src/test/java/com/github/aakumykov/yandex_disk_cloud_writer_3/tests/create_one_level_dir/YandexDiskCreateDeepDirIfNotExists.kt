@@ -23,9 +23,14 @@ class YandexDiskCreateDeepDirIfNotExists : YandexCreateDirBase() {
             val dirName = nameForDeepDir(depth)
             val dirSolidName = CloudWriter.mergeFilePaths(dirName)
 
-            enqueueResponseCodes(404) // Первая проверка существования глубокого каталога.
-            enqueueResponseCodes(201) // Создание последнего каталога в цепочке.
-
+            //
+            // Эти коды ответов нужны YandexCloudWriter-у для корректной работы http-методов.
+            // Они не учитываются в последующих проверках.
+            //
+            // Первая проверка существования глубокого каталога.
+            enqueueResponseCodes(404)
+            // Создание последнего каталога в цепочке имён глубокого каталога.
+            enqueueResponseCodes(201)
             // Последующие создания промежуточных каталогов без проверки.
             repeat(depth) { enqueueResponseCodes(404) }
 
