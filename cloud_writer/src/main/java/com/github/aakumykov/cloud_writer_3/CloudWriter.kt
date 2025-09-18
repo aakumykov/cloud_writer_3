@@ -198,11 +198,10 @@ interface CloudWriter {
     suspend fun putStream(
         inputStream: InputStream,
         targetPath: String,
-        isRelative: Boolean,
         overwriteIfExists: Boolean = false,
         readingCallback: ((Long) -> Unit)? = null,
         writingCallback: ((Long) -> Unit)? = null,
-        finishCallback: ((Long,Long) -> Unit)? = null,
+        finishCallback: ((Long, Long) -> Unit)? = null,
     )
 
 

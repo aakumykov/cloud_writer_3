@@ -75,11 +75,10 @@ class LocalCloudWriter(
     override suspend fun putStream(
         inputStream: InputStream,
         targetPath: String,
-        isRelative: Boolean,
         overwriteIfExists: Boolean,
         readingCallback: ((Long) -> Unit)?,
         writingCallback: ((Long) -> Unit)?,
-        finishCallback: ((Long,Long) -> Unit)?,
+        finishCallback: ((Long, Long) -> Unit)?,
     ) {
         return suspendCancellableCoroutine { cc ->
 

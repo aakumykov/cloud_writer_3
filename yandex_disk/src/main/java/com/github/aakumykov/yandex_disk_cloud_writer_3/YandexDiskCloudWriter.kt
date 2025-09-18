@@ -244,13 +244,12 @@ class YandexDiskCloudWriter(
     override suspend fun putStream(
         inputStream: InputStream,
         targetPath: String,
-        isRelative: Boolean,
         overwriteIfExists: Boolean,
         readingCallback: ((Long) -> Unit)?,
         writingCallback: ((Long) -> Unit)?,
         finishCallback: ((Long, Long) -> Unit)?
     ) {
-        val path = if (isRelative) virtualRootPlus(targetPath) else targetPath
+        val path = virtualRootPlus(targetPath)
 
         val uploadURL = getURLForUpload(path, overwriteIfExists)
 
@@ -333,6 +332,7 @@ class YandexDiskCloudWriter(
 
     val apiPathResources get() = "${apiPathBase}/resources"
     val apiPathMove get() = "${apiPathResources}/move"
+    val apiPathUpload get() = "${apiPathResources}/upload"
 
     private val apiUrlResources get() = "${apiScheme}://${apiHost}:${apiPort}${apiPathResources}"
     private val apiUrlUpload get() = "${apiUrlResources}/upload"
@@ -345,6 +345,7 @@ class YandexDiskCloudWriter(
         const val API_SCHEME = "https"
         const val API_HOST = "cloud-api.yandex.net"
         const val API_PATH_BASE = "/v1/disk"
+        const val API_URL = "${API_SCHEME}://${API_HOST}${API_PATH_BASE}"
 
         const val PARAM_PATH = "path"
         const val PARAM_FROM = "from"
