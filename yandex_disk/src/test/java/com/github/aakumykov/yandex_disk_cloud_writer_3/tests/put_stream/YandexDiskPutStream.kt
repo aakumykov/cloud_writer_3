@@ -61,7 +61,7 @@ class YandexDiskPutStream : YandexDiskBase() {
 
 
     //
-    // Проверка результата работы (файла)
+    // Проверка наличия результата работы (файла)
     //
     @Test
     fun putting_stream_produces_file() {

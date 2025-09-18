@@ -276,7 +276,10 @@ class YandexDiskCloudWriter(
 
             val url = apiURL(uploadURL)
 
-            val request = apiRequest(url) { put(requestBody) }
+            val request = apiRequest(url) {
+                // Почему PUT, если в документации POST? И ведь работает.
+                put(requestBody)
+            }
 
             val call = yandexDiskClient.newCall(request)
 
