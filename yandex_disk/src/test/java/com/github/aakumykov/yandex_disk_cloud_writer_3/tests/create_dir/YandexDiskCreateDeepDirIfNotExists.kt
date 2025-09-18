@@ -1,4 +1,4 @@
-package com.github.aakumykov.yandex_disk_cloud_writer_3.tests.create_one_level_dir
+package com.github.aakumykov.yandex_disk_cloud_writer_3.tests.create_dir
 
 import com.github.aakumykov.cloud_writer_3.CloudWriter
 import com.github.aakumykov.yandex_disk_cloud_writer_3.HTTP_METHOD_PUT
