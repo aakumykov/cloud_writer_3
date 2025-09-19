@@ -48,11 +48,7 @@ class LocalCloudWriter(
     }
 
     override suspend fun deleteFileOrEmptyDir(dirPath: String): String {
-        return if (isRelative) deleteEmptyDirAbsolute(virtualRootPlus(dirPath))
-        else deleteEmptyDirAbsolute(dirPath)
-    }
-
-    private fun deleteEmptyDirAbsolute(absolutePath: String): String {
+        val absolutePath = virtualRootPlus(dirPath)
         return File(absolutePath).delete().let { isDeleted ->
             if (isDeleted) absolutePath
             else throw CloudWriterException("Dir '$absolutePath' was not deleted.")
@@ -71,6 +67,12 @@ class LocalCloudWriter(
     }
 
 
+    override suspend fun getURLForUpload(
+        targetFilePath: String,
+        overwriteIfExists: Boolean
+    ): String = throw NotImplementedError("Not used in this implementation.")
+
+
     @Throws(IOException::class, CloudWriterException::class)
     override suspend fun putStream(
         inputStream: InputStream,
@@ -82,7 +84,7 @@ class LocalCloudWriter(
     ) {
         return suspendCancellableCoroutine { cc ->
 
-            val path = if (isRelative) virtualRootPlus(targetPath) else targetPath
+            val path = virtualRootPlus(targetPath)
 
             val targetFile = File(path)
 
@@ -108,8 +110,8 @@ class LocalCloudWriter(
         overwriteIfExists: Boolean
     ): Boolean = suspendCoroutine { continuation ->
 
-        val realFromPath = if (isRelative) virtualRootPlus(fromPath) else fromPath
-        val realToPath = if (isRelative) virtualRootPlus(toPath) else toPath
+        val realFromPath = virtualRootPlus(fromPath)
+        val realToPath = virtualRootPlus(toPath)
 
         val targetFile = File(realToPath)
 

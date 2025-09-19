@@ -191,6 +191,13 @@ interface CloudWriter {
 
 
     /**
+     * Запрашивает URL для последующей загрузки файл на сервер.
+     * Актуально не для всех реализаций (например, не используется в локальной (Local)).
+     */
+    suspend fun getURLForUpload(targetFilePath: String, overwriteIfExists: Boolean): String
+
+
+    /**
      * @param writingCallback Колбек, возвращающий количество записанных байт.
      * @param finishCallback Колбек, возвращающий количество прочитанных и записанных байт.
      */

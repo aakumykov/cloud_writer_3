@@ -220,7 +220,7 @@ class YandexDiskCloudWriter(
 
 
     @Throws(IOException::class, com.github.aakumykov.cloud_writer_3.CloudWriterException::class)
-    private suspend fun getURLForUpload(targetFilePath: String, overwriteIfExists: Boolean): String = suspendCancellableCoroutine{ cc ->
+    override suspend fun getURLForUpload(targetFilePath: String, overwriteIfExists: Boolean): String = suspendCancellableCoroutine{ cc ->
 
         val url = apiURL(apiUrlUpload,
             PARAM_PATH to targetFilePath,
@@ -353,7 +353,7 @@ class YandexDiskCloudWriter(
         const val PARAM_PATH = "path"
         const val PARAM_FROM = "from"
         private const val PARAM_FORCE_ASYNC = "force_async"
-        private const val PARAM_OVERWRITE = "overwrite"
+        const val PARAM_OVERWRITE = "overwrite"
         private const val PARAM_PERMANENTLY = "permanently"
 
         private const val VALUE_TRUE = "true"
