@@ -43,7 +43,7 @@ class YandexDiskCreateDeepDirIfNotExists : YandexCreateDirBase() {
             checkRequest(
                 recordedRequest = mockWebServer.takeNthRequest(depth+1),
                 httpMethod = HTTP_METHOD_PUT,
-                requestUrl = realCloudWriter.apiPathResources,
+                requestUrlPath = realCloudWriter.apiPathResources,
                 YandexDiskCloudWriter.PARAM_PATH to dirSolidName
             )
         }

@@ -10,7 +10,6 @@ import com.github.aakumykov.yandex_disk_cloud_writer_3.ext.toCloudWriterExceptio
 import com.google.gson.Gson
 import com.yandex.disk.rest.json.Link
 import kotlinx.coroutines.CancellableContinuation
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.suspendCancellableCoroutine
 import okhttp3.Call
 import okhttp3.HttpUrl
@@ -41,7 +40,7 @@ class YandexDiskCloudWriter(
 )
     : BasicCloudWriter()
 {
-    private val yandexDiskClient: OkHttpClient by lazy {
+    private val okHttpClient: OkHttpClient by lazy {
         yandexDiskOkhttpClientBuilder.create(authToken).build()
     }
 
@@ -53,7 +52,7 @@ class YandexDiskCloudWriter(
 
         val request = apiRequest(url) { put(EMPTY_REQUEST_BODY) }
 
-        val call = yandexDiskClient.newCall(request)
+        val call = okHttpClient.newCall(request)
 
         executeCall(call, cc) { response: Response ->
             when(response.code) {
@@ -123,7 +122,7 @@ class YandexDiskCloudWriter(
 
         val request = apiRequest(url) { delete() }
 
-        val call = yandexDiskClient.newCall(request)
+        val call = okHttpClient.newCall(request)
 
         executeCall(call, cc) { response ->
             when(response.code) {
@@ -167,7 +166,7 @@ class YandexDiskCloudWriter(
 
         val request = apiRequest(url) {}
 
-        val call = yandexDiskClient.newCall(request)
+        val call = okHttpClient.newCall(request)
 
         executeCall(call, cc) { response ->
             when(response.code) {
@@ -232,7 +231,7 @@ class YandexDiskCloudWriter(
 
         val request = apiRequest(url) {}
 
-        val call = yandexDiskClient.newCall(request)
+        val call = okHttpClient.newCall(request)
 
         executeCall(call, cc) { response ->
             when(response.code) {
@@ -280,7 +279,7 @@ class YandexDiskCloudWriter(
                 put(requestBody)
             }
 
-            val call = yandexDiskClient.newCall(request)
+            val call = okHttpClient.newCall(request)
 
             cc.invokeOnCancellation { cause ->
                 Log.i(TAG, cause?.message ?: "cc.invokeOnCancellation")
@@ -289,9 +288,7 @@ class YandexDiskCloudWriter(
 
             executeCall(call, cc) { response: Response ->
                 when(response.code) {
-                    201 -> {
-                        cc.resume(Unit)
-                    }
+                    201 -> cc.resume(Unit)
                     else -> throwCloudWriterException(response)
                 }
             }
@@ -317,7 +314,7 @@ class YandexDiskCloudWriter(
 
         val request = apiRequest(url) { post(EMPTY_REQUEST_BODY) }
 
-        val call = yandexDiskClient.newCall(request)
+        val call = okHttpClient.newCall(request)
 
         executeCall(call, cc) { response: Response ->
             when(response.code) {

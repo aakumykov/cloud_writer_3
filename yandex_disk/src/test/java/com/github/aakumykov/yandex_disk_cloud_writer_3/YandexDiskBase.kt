@@ -59,7 +59,7 @@ abstract class YandexDiskBase {
     protected fun checkRequest(
         recordedRequest: RecordedRequest,
         httpMethod: String,
-        requestUrl: String,
+        requestUrlPath: String,
         vararg queryParameters: Pair<String,String>
     ) {
 
@@ -69,7 +69,7 @@ abstract class YandexDiskBase {
         )
 
         Assert.assertEquals(
-            requestUrl,
+            requestUrlPath,
             recordedRequest.requestUrl?.encodedPath
         )
 
@@ -82,6 +82,7 @@ abstract class YandexDiskBase {
     }
 
 
+    @Deprecated("Удалить этот метод")
     protected fun checkRequest(
         httpMethod: String,
         requestUrl: String,
@@ -90,7 +91,7 @@ abstract class YandexDiskBase {
         checkRequest(
             recordedRequest = mockWebServer.takeRequest(),
             httpMethod = httpMethod,
-            requestUrl = requestUrl,
+            requestUrlPath = requestUrl,
             * queryParameters
         )
     }
