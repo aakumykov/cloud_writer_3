@@ -14,20 +14,15 @@ class YandexDiskFileExists : YandexDiskBase() {
     @Test
     fun root_dir_exists_request(): Unit = runBlocking {
 
+        enqueueResponseCodes(200)
+
         mockCloudWriter.fileExists(ROOT_PATH)
 
-        mockWebServer.takeRequest().also { request: RecordedRequest ->
-
-            Assert.assertEquals(
-                HTTP_METHOD_GET,
-                request.method
-            )
-
-            Assert.assertEquals(
-                mockCloudWriter.apiPathResources,
-                request.requestUrl?.encodedPath
-            )
-        }
+        checkRequest(
+            recordedRequest = mockWebServer.takeRequest(),
+            httpMethod = HTTP_METHOD_GET,
+            requestUrlPath = mockCloudWriter.apiPathResources
+        )
     }
 
     @Test
