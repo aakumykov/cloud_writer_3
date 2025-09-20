@@ -24,8 +24,9 @@ class YandexDiskCreateOneLevelDirIfNotExists : YandexCreateDirBase() {
         // "fileExists()", и затем, если нужно, PUT-метод "createOneLevelDir()";
         // здесь записанным запросом оказывается первый из них...
         checkRequest(
+            recordedRequest = mockWebServer.takeRequest(),
             httpMethod = HTTP_METHOD_GET,
-            requestUrl = realCloudWriter.apiPathResources,
+            requestUrlPath = realCloudWriter.apiPathResources,
             YandexDiskCloudWriter.PARAM_PATH to dirName
         )
     }
@@ -39,8 +40,9 @@ class YandexDiskCreateOneLevelDirIfNotExists : YandexCreateDirBase() {
         enqueueResponseCodes(200, 201)
         mockCloudWriter.createOneLevelDirIfNotExists(parentName, childName)
         checkRequest(
+            recordedRequest = mockWebServer.takeRequest(),
             httpMethod = HTTP_METHOD_GET,
-            requestUrl = realCloudWriter.apiPathResources,
+            requestUrlPath = realCloudWriter.apiPathResources,
             YandexDiskCloudWriter.PARAM_PATH to fullDirName
         )
     }

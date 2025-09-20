@@ -23,8 +23,9 @@ class YandexDiskCreateOneLevelDir : YandexCreateDirBase() {
         enqueueResponseCodes(201)
         mockCloudWriter.createOneLevelDir(dirName,)
         checkRequest(
+            recordedRequest = mockWebServer.takeRequest(),
             httpMethod = HTTP_METHOD_PUT,
-            requestUrl = realCloudWriter.apiPathResources,
+            requestUrlPath = realCloudWriter.apiPathResources,
             YandexDiskCloudWriter.PARAM_PATH to dirName
         )
     }
@@ -37,8 +38,9 @@ class YandexDiskCreateOneLevelDir : YandexCreateDirBase() {
         enqueueResponseCodes(201)
         mockCloudWriter.createOneLevelDir(parentName, childName)
         checkRequest(
+            recordedRequest = mockWebServer.takeRequest(),
             httpMethod = HTTP_METHOD_PUT,
-            requestUrl = realCloudWriter.apiPathResources,
+            requestUrlPath = realCloudWriter.apiPathResources,
             YandexDiskCloudWriter.PARAM_PATH to fullRelativePath
         )
     }

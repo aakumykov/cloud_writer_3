@@ -82,21 +82,6 @@ abstract class YandexDiskBase {
     }
 
 
-    @Deprecated("Удалить этот метод")
-    protected fun checkRequest(
-        httpMethod: String,
-        requestUrl: String,
-        vararg queryParameters: Pair<String,String>
-    ) {
-        checkRequest(
-            recordedRequest = mockWebServer.takeRequest(),
-            httpMethod = httpMethod,
-            requestUrlPath = requestUrl,
-            * queryParameters
-        )
-    }
-
-
     protected fun checkReturnedValue(requestedDirPath: String, resultingDirPath: String) {
         Assert.assertEquals(
             realCloudWriter.absolutePathFor(requestedDirPath),
