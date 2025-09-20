@@ -1,5 +1,6 @@
 package com.github.aakumykov.cloud_writer_3
 
+import androidx.core.util.Supplier
 import com.github.aakumykov.cloud_writer_3.extensions.stripMultiSlashes
 import java.io.IOException
 import java.io.InputStream
@@ -204,13 +205,12 @@ interface CloudWriter {
     @Throws(IOException::class, CloudWriterException::class)
     suspend fun putStream(
         inputStream: InputStream,
-        targetPath: String,
-        overwriteIfExists: Boolean = false,
+        targetPathProvider: Supplier<String>,
+        overwriteIfExists: Boolean,
         readingCallback: ((Long) -> Unit)? = null,
         writingCallback: ((Long) -> Unit)? = null,
         finishCallback: ((Long, Long) -> Unit)? = null,
     )
-
 
 
     /**

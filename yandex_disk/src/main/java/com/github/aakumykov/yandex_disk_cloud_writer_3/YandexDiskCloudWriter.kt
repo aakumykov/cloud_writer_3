@@ -1,13 +1,16 @@
 package com.github.aakumykov.yandex_disk_cloud_writer_3
 
 import android.util.Log
+import androidx.core.util.Supplier
 import com.github.aakumykov.cloud_writer_3.BasicCloudWriter
 import com.github.aakumykov.cloud_writer_3.CloudWriter
+import com.github.aakumykov.cloud_writer_3.CloudWriterException
 import com.github.aakumykov.copy_between_streams_with_counting.copyBetweenStreamsWithCounting
 import com.github.aakumykov.yandex_disk_cloud_writer_3.ext.toCloudWriterException
 import com.google.gson.Gson
 import com.yandex.disk.rest.json.Link
 import kotlinx.coroutines.CancellableContinuation
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.suspendCancellableCoroutine
 import okhttp3.Call
 import okhttp3.HttpUrl
@@ -240,19 +243,15 @@ class YandexDiskCloudWriter(
     }
 
 
-    @Throws(IOException::class, com.github.aakumykov.cloud_writer_3.CloudWriterException::class)
+    @Throws(IOException::class, CloudWriterException::class)
     override suspend fun putStream(
         inputStream: InputStream,
-        targetPath: String,
+        targetPathProvider: Supplier<String>,
         overwriteIfExists: Boolean,
         readingCallback: ((Long) -> Unit)?,
         writingCallback: ((Long) -> Unit)?,
-        finishCallback: ((Long, Long) -> Unit)?
+        finishCallback: ((Long, Long) -> Unit)?,
     ) {
-        val path = virtualRootPlus(targetPath)
-
-        val uploadURL = getURLForUpload(path, overwriteIfExists)
-
         return suspendCancellableCoroutine { cc ->
 
             val requestBody: RequestBody = object: RequestBody() {
@@ -274,7 +273,7 @@ class YandexDiskCloudWriter(
                 }
             }
 
-            val url = apiURL(uploadURL)
+            val url = apiURL(targetPathProvider.get())
 
             val request = apiRequest(url) {
                 // Почему PUT, если в документации POST? И ведь работает.

@@ -1,5 +1,6 @@
 package com.github.aakumykov.local_cloud_writer_3
 
+import androidx.core.util.Supplier
 import com.github.aakumykov.cloud_writer_3.BasicCloudWriter
 import com.github.aakumykov.cloud_writer_3.CloudWriter
 import com.github.aakumykov.cloud_writer_3.CloudWriterException
@@ -76,7 +77,7 @@ class LocalCloudWriter(
     @Throws(IOException::class, CloudWriterException::class)
     override suspend fun putStream(
         inputStream: InputStream,
-        targetPath: String,
+        targetPathProvider: Supplier<String>,
         overwriteIfExists: Boolean,
         readingCallback: ((Long) -> Unit)?,
         writingCallback: ((Long) -> Unit)?,
@@ -84,7 +85,7 @@ class LocalCloudWriter(
     ) {
         return suspendCancellableCoroutine { cc ->
 
-            val path = virtualRootPlus(targetPath)
+            val path = virtualRootPlus(targetPathProvider.get())
 
             val targetFile = File(path)
 

@@ -30,7 +30,7 @@ class YandexDiskGetUrlForUpload : YandexDiskBase() {
                 .also { mockWebServer.enqueue(it) }
 
             runBlocking {
-                mockCloudWriter.getURLForUpload(fileName,false)
+                mockCloudWriter.getURLForUpload(fileName,doOverride)
             }
 
             checkRequest(
@@ -55,8 +55,9 @@ class YandexDiskGetUrlForUpload : YandexDiskBase() {
         }
     }
 
+
     companion object {
         private const val URL_FOR_UPLOAD = "https://uploader64sas.disk.yandex.net:443/upload-target/20250918T170516.865.utd.eue6mn0pltl0qdkdd233j05ja-k64sas.175088"
-        private const val GET_UPLOAD_URL_JSON_RESPONSE = "{'method':'PUT','href':$URL_FOR_UPLOAD,'templated':false,'operation_id':'1a4e120c3f11ce2235f1ca519433d4048aa67df133d29e635fb8a0159a3e6c92'}"
+        private const val GET_UPLOAD_URL_JSON_RESPONSE = "{'method':'PUT','href':'${URL_FOR_UPLOAD}','templated':false,'operation_id':'1a4e120c3f11ce2235f1ca519433d4048aa67df133d29e635fb8a0159a3e6c92'}"
     }
 }
