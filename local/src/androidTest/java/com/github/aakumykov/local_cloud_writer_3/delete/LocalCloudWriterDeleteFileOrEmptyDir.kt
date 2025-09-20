@@ -1,14 +1,14 @@
 package com.github.aakumykov.local_cloud_writer_3.delete
 
 import com.github.aakumykov.cloud_writer_3.CloudWriterException
-import com.github.aakumykov.local_cloud_writer_3.base.LocalBase
+import com.github.aakumykov.local_cloud_writer_3.base.LocalFileCreationBase
 import com.github.aakumykov.local_cloud_writer_3.utils.randomId
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Test
 import java.io.File
 
-class LocalCloudWriterDeleteFileOrEmptyDir : LocalBase() {
+class LocalCloudWriterDeleteFileOrEmptyDir : LocalFileCreationBase() {
 
     @Test
     fun deleting_a_file(): Unit = runBlocking{
@@ -61,13 +61,6 @@ class LocalCloudWriterDeleteFileOrEmptyDir : LocalBase() {
             runBlocking {
                 cloudWriter.deleteFileOrEmptyDir(dir1Name)
             }
-        }
-    }
-
-
-    private fun newFile(name: String): File {
-        return File(cloudWriter.virtualRootPlus(name)).apply {
-            createNewFile()
         }
     }
 }
